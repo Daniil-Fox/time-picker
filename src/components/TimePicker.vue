@@ -8,7 +8,46 @@
     </div>
     <div class="clock-wrapper" :class="{ active }">
       <div class="clock" :style="{ 'background-color': this.backgroundColor }">
-        <div class="clock-theme"></div>
+        <div class="clock-theme">
+          <div class="container">
+            <div class="block">
+              <button class="square">10</button>
+            </div>
+            <div class="block">
+             <button class="square">11</button>
+            </div>
+            <div class="block">
+              <button class="square">12</button>
+            </div>
+            <div class="block">
+              <button class="square">1</button>
+            </div>
+            <div class="block">
+              <button class="square">2</button>
+            </div>
+            <div class="block">
+              <button class="square">3</button>
+            </div>
+            <div class="block">
+              <button class="square">4</button>
+            </div>
+            <div class="block">
+              <button class="square">5</button>
+            </div>
+            <div class="block">
+              <button class="square">6</button>
+            </div>
+            <div class="block">
+              <button class="square">7</button>
+            </div>
+            <div class="block">
+             <button class="square">8</button>
+            </div>
+            <div class="block">
+             <button class="square">9</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -60,9 +99,62 @@ export default {
   text-align: center;
   justify-content: center;
 }
-
+.block {
+  border: 1px dashed black;
+  width: 150px;
+  position: absolute;
+  top:7.8rem;
+  height: 50px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  transform-origin: 100%;
+  transform: rotate(00deg);
+  position: absolute;
+}
+.block:nth-child(1) {
+  transform: rotate(30deg);
+}
+.block:nth-child(2) {
+  transform: rotate(60deg);
+}
+.block:nth-child(3) {
+  transform: rotate(90deg);
+}
+.block:nth-child(4) {
+  transform: rotate(120deg);
+}
+.block:nth-child(5) {
+  transform: rotate(150deg);
+}
+.block:nth-child(6) {
+  transform: rotate(180deg);
+}
+.block:nth-child(7) {
+  transform: rotate(210deg);
+}
+.block:nth-child(8) {
+  transform: rotate(240deg);
+}
+.block:nth-child(9) {
+  transform: rotate(270deg);
+}
+.block:nth-child(10) {
+  transform: rotate(300deg);
+}
+.block:nth-child(11) {
+  transform: rotate(330deg);
+}
+.block:nth-child(12) {
+  transform: rotate(360deg);
+}
+.square {
+  border: 1px solid black;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
 .select::before {
-  /*content: "select time  |HH| : |MM|";*/
   color: #868686;
   position: absolute;
   text-transform: uppercase;
