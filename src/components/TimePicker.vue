@@ -11,43 +11,40 @@
         <div class="clock-theme">
           <div class="container">
             <div class="block">
-              <div class="square"></div>
+              <button class="square">10</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+             <button class="square">11</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+              <button class="square">12</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+              <button class="square">1</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+              <button class="square">2</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+              <button class="square">3</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+              <button class="square">4</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+              <button class="square">5</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+              <button class="square">6</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+              <button class="square">7</button>
             </div>
             <div class="block">
-              <div class="square"></div>
+             <button class="square">8</button>
             </div>
             <div class="block">
-              <div class="square"></div>
-            </div>
-            <div class="block">
-              <div class="square"></div>
+             <button class="square">9</button>
             </div>
           </div>
         </div>
@@ -106,10 +103,13 @@ export default {
   border: 1px dashed black;
   width: 150px;
   position: absolute;
-  top:18vh;
+  top:7.8rem;
   height: 50px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
   transform-origin: 100%;
-  transform: rotate(0deg);
+  transform: rotate(00deg);
   position: absolute;
 }
 .block:nth-child(1) {
@@ -149,14 +149,12 @@ export default {
   transform: rotate(360deg);
 }
 .square {
-  background: yellow;
   border: 1px solid black;
   width: 30px;
   height: 30px;
   border-radius: 50%;
 }
 .select::before {
-  /*content: "select time  |HH| : |MM|";*/
   color: #868686;
   position: absolute;
   text-transform: uppercase;
