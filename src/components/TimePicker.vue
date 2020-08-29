@@ -12,16 +12,28 @@
           <div class="container" v-for="idx in 12" :key="idx">
             <div class="block" :style="{ transform: `rotate(${idx * 30}deg)` }">
               <button
+                v-if="layoutFromOne"
                 class="square"
-                :style="{ transform: `rotate(${(270 -idx*(30))}deg)` }"
+                :style="{ transform: `rotate(${270 - idx * 30}deg)` }"
                 @click="selectHour(idx)"
               >
                 {{ idx }}
+              </button>
+              <button
+                v-else
+                class="square"
+                :style="{ transform: `rotate(${270 - idx * 30}deg)` }"
+                @click="selectHour(idx)"
+              >
+                {{ idx + 12 }}
               </button>
             </div>
           </div>
         </div>
       </div>
+      <button class="btn-next" @click="nextHourLayout">
+        <img src="../assets/next.svg" width="2rem" class="btn-picture" />
+      </button>
     </div>
   </section>
 </template>
@@ -34,7 +46,8 @@ export default {
   },
   data: () => ({
     active: false,
-    hour: Number
+    hour: Number,
+    layoutFromOne: true
   }),
   methods: {
     clickHandler() {
@@ -44,6 +57,9 @@ export default {
     selectHour(idx) {
       this.hour = idx;
       console.log(this.hour);
+    },
+    nextHourLayout() {
+      this.layoutFromOne = !this.layoutFromOne;
     }
   },
   computed: {
@@ -138,6 +154,7 @@ export default {
   border-radius: 100%;
   z-index: 100;
   display: none;
+  text-align: center;
 }
 .active {
   display: block;
@@ -158,5 +175,8 @@ export default {
   background-size: 300px;
   display: flex;
   justify-content: center;
+}
+.btn-next {
+  margin-top: 2rem;
 }
 </style>
