@@ -1,8 +1,10 @@
 <template>
   <section>
     <div class="select" @click="clickHandler">
-      <p class="placeholder">HH MM</p>
-      <button class="btn-time">Select</button>
+      <p class="placeholder"></p>
+      <button class="btn-time">
+        <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
+      </button>
     </div>
     <div class="clock-wrapper" :class="{ active }">
       <div class="clock" :style="{ 'background-color': this.backgroundColor }">
@@ -14,7 +16,8 @@
 <script>
 export default {
   props: {
-    backgroundColor: String
+    backgroundColor: { type: String } || "E5E5E5",
+    value: { type: Date || String } || new Date()
   },
   data: () => ({
     active: false
@@ -23,6 +26,18 @@ export default {
     clickHandler() {
       console.log(this.backgroundColor);
       this.active = !this.active;
+    }
+  },
+  computed: {
+    formatDate: () => {
+      if (this.date) {
+        console.log(this.date);
+        if (typeof this.date === Date) {
+          return `${this.date.getHours()}:${this.date.getMinutes()}:${this.date.getSeconds()}`;
+        }
+        return this.date;
+      }
+      return new Date();
     }
   }
 };
@@ -36,7 +51,7 @@ export default {
   position: relative;
   border: 1px solid black;
   width: 300px;
-  height: 30px;
+  height: 2rem;
 }
 
 .select::before {
@@ -46,12 +61,17 @@ export default {
   text-transform: uppercase;
   padding: 5px;
 }
+.btn-picture {
+  width: 1.8rem;
+  height: inherit;
+  margin: 0.1rem 0.2rem;
+}
 .btn-time {
+  border: 0px;
+  background: none;
+  outline: none;
   position: absolute;
   right: 0;
-  height: inherit;
-  border-radius: 50%;
-  width: 50px;
 }
 .placeholder {
   position: absolute;
