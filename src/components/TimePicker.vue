@@ -1,8 +1,8 @@
 <template>
   <section>
-    <div class="select" @click="clickHandler">
-      <p class="placeholder"></p>
-      <button class="btn-time">
+    <div class="select" :style="{ 'width': this.width }">
+      <p class="placeholder">{{ this.value }}</p>
+      <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
     </div>
@@ -17,6 +17,7 @@
 export default {
   props: {
     backgroundColor: { type: String } || "E5E5E5",
+    width: String,
     value: { type: Date || String } || new Date()
   },
   data: () => ({
@@ -49,13 +50,19 @@ export default {
 }
 .select {
   position: relative;
-  border: 1px solid black;
-  width: 300px;
-  height: 2rem;
+  border: none;
+  background: #ececec;
+  border-radius: 50px 50px 50px 50px;
+  width: 40vh;
+  height: 2.2rem;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
 }
 
 .select::before {
-  content: "select time  |HH| : |MM|";
+  /*content: "select time  |HH| : |MM|";*/
   color: #868686;
   position: absolute;
   text-transform: uppercase;
@@ -64,7 +71,7 @@ export default {
 .btn-picture {
   width: 1.8rem;
   height: inherit;
-  margin: 0.1rem 0.2rem;
+  margin: 0.2rem 0.2rem;
 }
 .btn-time {
   border: 0px;
@@ -72,6 +79,7 @@ export default {
   outline: none;
   position: absolute;
   right: 0;
+  width: 2.5rem;
 }
 .placeholder {
   position: absolute;
