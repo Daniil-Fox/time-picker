@@ -1,5 +1,11 @@
 # time-picker
 
+## About
+
+convenient time picker for vue.js
+
+
+
 ## Project setup
 ```
 npm install
@@ -19,6 +25,12 @@ npm run build
 ```
 npm run lint
 ```
+### Available props
+
+| Prop       | Type      | Default   | Description |
+|:--------------|:----------|:----------|:------------|
+|backgroundColor|String|#E5E5E5|just background color|
+
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
