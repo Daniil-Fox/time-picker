@@ -4,8 +4,8 @@
       <p class="placeholder">HH MM</p>
       <button class="btn-time">Select</button>
     </div>
-    <div class="clock-wrapper" :class="{active}">
-      <div class="clock">
+    <div class="clock-wrapper" :class="{ active }">
+      <div class="clock" :style="{ 'background-color': this.backgroundColor }">
         <div class="clock-theme"></div>
       </div>
     </div>
@@ -13,12 +13,15 @@
 </template>
 <script>
 export default {
+  props: {
+    backgroundColor: String
+  },
   data: () => ({
     active: false
-    
   }),
   methods: {
     clickHandler() {
+      console.log(this.backgroundColor);
       this.active = !this.active;
     }
   }
@@ -73,7 +76,6 @@ export default {
   width: inherit;
   height: inherit;
   border-radius: inherit;
-  background: linear-gradient(45deg, rgb(255, 100, 100), rgb(12, 49, 255));
   background-size: 300px;
 }
 .clock-theme {
@@ -83,6 +85,4 @@ export default {
   height: inherit;
   background-size: 300px;
 }
-
-
 </style>
