@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section style="root">
     <div class="select" :style="{ width: this.width }">
       <p class="placeholder">{{ this.value }}</p>
       <button class="btn-time" @click="clickHandler">
@@ -13,7 +13,7 @@
             <div class="block" :style="{ transform: `rotate(${idx * 30}deg)` }">
               <button
                 class="square"
-                :style="{ transform: `rotate(${idx * 30}deg)` }"
+                :style="{ transform: `rotate(${(270 -idx*(30))}deg)` }"
                 @click="selectHour(idx)"
               >
                 {{ idx }}
@@ -78,7 +78,6 @@ export default {
   justify-content: center;
 }
 .block {
-  border: 1px dashed black;
   width: 150px;
 
   height: 50px;
@@ -95,6 +94,12 @@ export default {
   transform: rotate(90deg);
   transform-origin: 100%;
   position: absolute;
+}
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .square {
   border: 1px solid black;
@@ -126,8 +131,7 @@ export default {
   display: none;
 }
 .clock-wrapper {
-  position: absolute;
-  margin-top: 5rem;
+  margin: 2rem auto;
   border: 10px solid #ccc;
   width: 300px;
   height: 300px;
@@ -140,7 +144,7 @@ export default {
 }
 .clock {
   position: relative;
-  z-index: -1;
+  z-index: 10;
   width: inherit;
   height: inherit;
   border-radius: inherit;
