@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section style="root">
     <div class="select" :style="{ width: this.width }">
       <p class="placeholder">{{ this.value }}</p>
       <button class="btn-time" @click="clickHandler">
@@ -96,6 +96,12 @@ export default {
   transform-origin: 100%;
   position: absolute;
 }
+.root{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .square {
   border: 1px solid black;
   width: 30px;
@@ -126,8 +132,7 @@ export default {
   display: none;
 }
 .clock-wrapper {
-  position: absolute;
-  margin-top: 5rem;
+  margin: 2rem auto;
   border: 10px solid #ccc;
   width: 300px;
   height: 300px;
