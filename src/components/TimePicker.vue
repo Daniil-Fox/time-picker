@@ -13,7 +13,7 @@
             <div class="block" :style="{ transform: `rotate(${idx * 30}deg)` }">
               <button
                 class="square"
-                :style="{ transform: `rotate(${idx * 30}deg)` }"
+                :style="{ transform: `rotate(${(270 -idx*(30))}deg)` }"
                 @click="selectHour(idx)"
               >
                 {{ idx }}
@@ -78,7 +78,6 @@ export default {
   justify-content: center;
 }
 .block {
-  border: 1px dashed black;
   width: 150px;
 
   height: 50px;
@@ -96,8 +95,8 @@ export default {
   transform-origin: 100%;
   position: absolute;
 }
-.root{
-  display:flex;
+.root {
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -145,7 +144,7 @@ export default {
 }
 .clock {
   position: relative;
-  z-index: -1;
+  z-index: 10;
   width: inherit;
   height: inherit;
   border-radius: inherit;

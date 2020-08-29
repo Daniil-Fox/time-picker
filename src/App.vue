@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <TimePicker :backgroundColor="'#f6cf'" :width="'50vh'"/>
+    <TimePicker :backgroundColor="'#E5E5E5'" :width="'50vh'"/>
   </div>
 </template>
 <script>
