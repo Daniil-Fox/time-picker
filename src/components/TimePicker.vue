@@ -23,7 +23,7 @@
                 v-else
                 class="square"
                 :style="{ transform: `rotate(${270 - idx * 30}deg)` }"
-                @click="selectHour(idx)"
+                @click="selectHour(idx + 12)"
               >
                 {{ idx + 12 }}
               </button>
