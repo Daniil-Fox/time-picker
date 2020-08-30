@@ -1,7 +1,7 @@
 <template>
   <section style="root">
     <div class="select" :style="{ width }">
-      <p class="placeholder">{{ value }}</p>
+      <p class="placeholder">{{ this.time }}</p>
       <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
@@ -69,6 +69,8 @@ export default {
   data: () => ({
     active: false,
     hour: Number,
+    minute: Number,
+    time: "hh:mm:ss",
     layoutFromOne: true
   }),
   methods: {
@@ -78,22 +80,13 @@ export default {
     },
     selectHour(idx) {
       this.hour = idx;
-      console.log(this.hour);
+      this.time = this.formatTime(this.hour);
     },
     nextHourLayout() {
       this.layoutFromOne = !this.layoutFromOne;
-    }
-  },
-  computed: {
-    formatDate: () => {
-      if (this.date) {
-        console.log(this.date);
-        if (typeof this.date === Date) {
-          return `${this.date.getHours()}:${this.date.getMinutes()}:${this.date.getSeconds()}`;
-        }
-        return this.date;
-      }
-      return new Date();
+    },
+    formatTime(hour) {
+      return `${hour}:00:00`;
     }
   }
 };
@@ -128,6 +121,7 @@ export default {
   bottom: -1.5rem;
 }
 .container {
+  text-align: center;
   align-items: center;
   transform: rotate(90deg);
   transform-origin: 100%;
@@ -171,8 +165,10 @@ export default {
   width: 2.5rem;
 }
 .placeholder {
-  position: absolute;
-  display: none;
+  display: block;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 1rem;
 }
 .clock-wrapper {
   position: absolute;
@@ -180,7 +176,6 @@ export default {
   right: 0;
   opacity: 0;
   top: -400px;
-  margin: 0 auto;
   border: 10px solid #ccc;
   width: 300px;
   height: 300px;
@@ -228,7 +223,10 @@ export default {
   justify-content: center;
 }
 .btn-next {
-  margin-top: 2rem;
+  margin-top: 1.8rem;
+  border-radius: 50%;
+  border: 1px solid rgb(75, 75, 75);
+  padding: 0.1rem;
 }
 .slide-fade-enter {
   transform: translateY(-200px);
