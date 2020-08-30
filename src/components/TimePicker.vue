@@ -8,25 +8,25 @@
       <transition name="slide-fade">
         <div
           class="wrapper"
-          :style="{'width' : width + '50px', 'height' : width + '100px'}"
+          
           v-if="active"
         >
           <div class="clock-wrapper" :style="{width, 'height' : width}" :class="{ active }">
-            <div class="clock" :style="{ 'background-color': backgroundColor }">
-              <div class="clock-theme" :style="{width, 'height' : width, 'backgroundSize' : width}">
+            <div class="clock" :style="{ backgroundColor }">
+              <div class="clock-theme" :style="{'backgroundSize' : width}">
                 <div
                   class="container"
-                  :style="{'width' : width / 10, 'heigh' : width / 10}"
+                 
                   v-for="idx in 12"
                   :key="idx"
                 >
                   <div
                     class="block"
-                    :style="{ transform: `rotate(${idx * 30}deg)`, 'width' : width / 2, 'height' : width / 6}"
+                    :style="{transform: `rotate(${idx * 30}deg)`}"
                   >
                     <button
                       class="square"
-                      :style="{ transform: `rotate(${270 - idx * 30}deg)`, 'width' : width / 10, 'heigh' : width / 10  }"
+                      :style="{ transform: `rotate(${270 - idx * 30}deg)`}"
                       @click="selectHour(idx)"
                     >{{ layoutFromOne ? idx : idx + 12 }}</button>
                   </div>
@@ -34,7 +34,7 @@
               </div>
             </div>
             <button class="btn-next" @click="nextHourLayout">
-              <img src="../assets/next.svg" width="2rem" class="btn-picture" />
+              <img src="../assets/next.svg"  class="btn-picture" />
             </button>
           </div>
         </div>
@@ -42,6 +42,8 @@
     </div>
   </section>
 </template>
+
+
 <script>
 export default {
   props: {
@@ -51,7 +53,7 @@ export default {
   },
   data: () => ({
     active: false,
-    hour: Number,
+    hour: null,
     layoutFromOne: true
   }),
   methods: {
@@ -81,6 +83,9 @@ export default {
   }
 };
 </script>
+
+
+
 <style scoped>
 * {
   margin: 0;
@@ -101,10 +106,8 @@ export default {
 }
 .block {
   width: 150px;
-
   height: 50px;
   display: flex;
-  /* justify-content: start; */
   align-items: center;
   transform-origin: 100%;
   position: absolute;
@@ -127,6 +130,7 @@ export default {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  font-size: 15px;
 }
 .select::before {
   color: #868686;
@@ -206,6 +210,9 @@ export default {
 }
 .btn-next {
   margin-top: 2rem;
+}
+.btn-next img {
+  width: 2rem;
 }
 .slide-fade-enter {
   transform: translateY(-200px);
