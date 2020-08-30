@@ -35,6 +35,11 @@
                       height: width / 6
                     }"
                   >
+                    <hr
+                      v-if="clockHand"
+                      class="clock-hand"
+                      :style="{ backgroundColor: 'red' }"
+                    />
                     <button
                       class="square"
                       :style="{
@@ -50,8 +55,9 @@
                 </div>
               </div>
             </div>
+
             <button class="btn-next" @click="nextHourLayout">
-              <img src="../assets/next.svg" width="2rem" class="btn-picture" />
+              <img src="../assets/next.svg" class="btn-picture" />
             </button>
           </div>
         </div>
@@ -68,6 +74,7 @@ export default {
   },
   data: () => ({
     active: false,
+    clockHand: false,
     hour: Number,
     minute: Number,
     time: "hh:mm:ss",
@@ -80,6 +87,7 @@ export default {
     },
     selectHour(idx) {
       this.hour = idx;
+      this.clockHand = !this.clockHand;
       this.time = this.formatTime(this.hour);
     },
     nextHourLayout() {
@@ -111,7 +119,6 @@ export default {
 }
 .block {
   width: 150px;
-
   height: 50px;
   display: flex;
 
@@ -143,7 +150,18 @@ export default {
   color: #000;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 700;
+}
+.clock-hand {
+  position: absolute;
+  border: none;
+  transform-origin: 89%;
+  transform: rotate(1deg);
+  height: 2px;
+  width: 120px;
+}
+.blockActive {
+  border: 1px solid #000;
 }
 .select::before {
   color: #868686;
@@ -151,10 +169,13 @@ export default {
   text-transform: uppercase;
   padding: 5px;
 }
+.btn-field {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .btn-picture {
   width: 1.8rem;
-  height: inherit;
-  margin: 0.2rem 0.2rem;
 }
 .btn-time {
   border: 0px;
@@ -164,10 +185,19 @@ export default {
   right: 0;
   width: 2.5rem;
 }
+
+.btn-next {
+  margin-top: 1.8rem;
+  border-radius: 50%;
+  border: 2px solid rgb(104, 104, 104);
+  width: 3rem;
+  height: 3rem;
+  background: none;
+}
 .placeholder {
   display: block;
   text-transform: uppercase;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 1rem;
 }
 .clock-wrapper {
@@ -184,7 +214,6 @@ export default {
   display: none;
   text-align: center;
   z-index: -1;
-  box-shadow: 5px 10px 10px rgb(107, 107, 107);
 }
 .wrapper {
   left: 0;
@@ -204,7 +233,6 @@ export default {
   opacity: 1;
   top: 20px;
 }
-
 .clock {
   position: relative;
   z-index: 10;
@@ -221,12 +249,6 @@ export default {
   background-size: 300px;
   display: flex;
   justify-content: center;
-}
-.btn-next {
-  margin-top: 1.8rem;
-  border-radius: 50%;
-  border: 1px solid rgb(75, 75, 75);
-  padding: 0.1rem;
 }
 .slide-fade-enter {
   transform: translateY(-200px);
