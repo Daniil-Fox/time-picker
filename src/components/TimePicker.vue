@@ -1,39 +1,44 @@
 <template>
   <section style="root">
-    <div class="select" :style="{ width: this.width }">
-      <p class="placeholder">{{ this.value }}</p>
+    <div class="select" :style="{ width }">
+      <p class="placeholder">{{ value }}</p>
       <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
-    </div>
-    <div class="clock-wrapper" :class="{ active }">
-      <div class="clock" :style="{ 'background-color': this.backgroundColor }">
-        <div class="clock-theme">
-          <div class="container" v-for="idx in 12" :key="idx">
-            <div class="block" :style="{ transform: `rotate(${idx * 30}deg)` }">
-              <button
-                v-if="layoutFromOne"
-                class="square"
-                :style="{ transform: `rotate(${270 - idx * 30}deg)` }"
-                @click="selectHour(idx)"
-              >
-                {{ idx }}
-              </button>
-              <button
-                v-else
-                class="square"
-                :style="{ transform: `rotate(${270 - idx * 30}deg)` }"
-                @click="selectHour(idx)"
-              >
-                {{ idx + 12 }}
-              </button>
+      <transition name="slide-fade">
+        <div
+          class="wrapper"
+          :style="{'width' : width + '50px', 'height' : width + '100px'}"
+          v-if="active"
+        >
+          <div class="clock-wrapper" :style="{width, 'height' : width}" :class="{ active }">
+            <div class="clock" :style="{ 'background-color': backgroundColor }">
+              <div class="clock-theme" :style="{width, 'height' : width, 'backgroundSize' : width}">
+                <div
+                  class="container"
+                  :style="{'width' : width / 10, 'heigh' : width / 10}"
+                  v-for="idx in 12"
+                  :key="idx"
+                >
+                  <div
+                    class="block"
+                    :style="{ transform: `rotate(${idx * 30}deg)`, 'width' : width / 2, 'height' : width / 6}"
+                  >
+                    <button
+                      class="square"
+                      :style="{ transform: `rotate(${270 - idx * 30}deg)`, 'width' : width / 10, 'heigh' : width / 10  }"
+                      @click="selectHour(idx)"
+                    >{{ layoutFromOne ? idx : idx + 12 }}</button>
+                  </div>
+                </div>
+              </div>
             </div>
+            <button class="btn-next" @click="nextHourLayout">
+              <img src="../assets/next.svg" width="2rem" class="btn-picture" />
+            </button>
           </div>
         </div>
-      </div>
-      <button class="btn-next" @click="nextHourLayout">
-        <img src="../assets/next.svg" width="2rem" class="btn-picture" />
-      </button>
+      </transition>
     </div>
   </section>
 </template>
@@ -92,20 +97,20 @@ export default {
   flex-direction: column;
   text-align: center;
   justify-content: center;
+  z-index: 10000;
 }
 .block {
   width: 150px;
 
   height: 50px;
   display: flex;
-  justify-content: start;
+  /* justify-content: start; */
   align-items: center;
   transform-origin: 100%;
   position: absolute;
   bottom: -1.5rem;
 }
 .container {
-  justify-content: start;
   align-items: center;
   transform: rotate(90deg);
   transform-origin: 100%;
@@ -147,7 +152,12 @@ export default {
   display: none;
 }
 .clock-wrapper {
-  margin: 2rem auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  top: -400px;
+  margin: 0 auto;
   border: 10px solid #ccc;
   width: 300px;
   height: 300px;
@@ -155,10 +165,28 @@ export default {
   z-index: 100;
   display: none;
   text-align: center;
+  z-index: -1;
+  box-shadow: 5px 10px 10px rgb(107, 107, 107);
+}
+.wrapper {
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  height: 410px;
+  width: 350px;
+  position: absolute;
+  top: 30px;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  z-index: -1;
 }
 .active {
   display: block;
+  opacity: 1;
+  top: 20px;
 }
+
 .clock {
   position: relative;
   z-index: 10;
@@ -178,5 +206,23 @@ export default {
 }
 .btn-next {
   margin-top: 2rem;
+}
+.slide-fade-enter {
+  transform: translateY(-200px);
+  opacity: 0;
+}
+.slide-fade-enter-active {
+  transition: all .3s;
+}
+.slide-fade-enter-to {
+  transform: translateY(10px);
+  opacity: 1;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s;
+}
+.slide-fade-leave-to, .slide-fade-leave {
+  transform: translateY(-200px);
+  opacity: 0;
 }
 </style>
