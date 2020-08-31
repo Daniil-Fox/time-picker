@@ -1,40 +1,61 @@
 <template>
   <section style="root">
     <div class="select" :style="{ width }">
-      <p class="placeholder">{{ value }}</p>
+      <p class="placeholder">{{ selectedTime }}</p>
       <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
         <div
           class="wrapper"
-          
+          :style="{ width: width + '50px', height: width + '100px' }"
           v-if="active"
         >
-          <div class="clock-wrapper" :style="{width, 'height' : width}" :class="{ active }">
+          <div
+            class="clock-wrapper"
+            :style="{ width, height: width }"
+            :class="{ active }"
+          >
             <div class="clock" :style="{ backgroundColor }">
-              <div class="clock-theme" :style="{'backgroundSize' : width}">
+              <div
+                class="clock-theme"
+                :style="{ width, 'height': width, backgroundSize: width }"
+              >
                 <div
                   class="container"
-                 
-                  v-for="idx in 12"
+                  :style="{ width: width / 10, heigh: width / 10 }"
+                  v-for="(key, idx) in arrow"
                   :key="idx"
                 >
                   <div
                     class="block"
-                    :style="{transform: `rotate(${idx * 30}deg)`}"
+                    :style="{
+                      transform: `rotate(${key.idx * 30}deg)`,
+                    }"
                   >
+                    <select
+                      v-if="key.show"
+                      v-model="key.show"
+                      class="clock-hand"
+                      :style="{ backgroundColor: 'red' }"
+                    />
                     <button
                       class="square"
-                      :style="{ transform: `rotate(${270 - idx * 30}deg)`}"
-                      @click="selectHour(idx)"
-                    >{{ layoutFromOne ? idx : idx + 12 }}</button>
+                      :style="{
+                        transform: `rotate(${270 - key.idx * 30}deg)`,
+                        
+                      }"
+                      @click="selectHour(key.idx)"
+                    >
+                      {{ layoutFromOne ? key.idx : key.idx + 12 }}
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+
             <button class="btn-next" @click="nextHourLayout">
-              <img src="../assets/next.svg"  class="btn-picture" />
+              <img src="../assets/next.svg" class="btn-picture" />
             </button>
           </div>
         </div>
@@ -52,8 +73,26 @@ export default {
     value: { type: Date || String } || new Date()
   },
   data: () => ({
+    arrow: [
+      {idx: 1, show: false},
+      {idx: 2, show: false},
+      {idx: 3, show: false},
+      {idx: 4, show: false},
+      {idx: 5, show: false},
+      {idx: 6, show: false},
+      {idx: 7, show: false},
+      {idx: 8, show: false},
+      {idx: 9, show: false},
+      {idx: 10, show: false},
+      {idx: 11, show: false},
+      {idx: 12, show: false},
+    ],
+
     active: false,
-    hour: null,
+    
+    hour: null, //здесь тип не определяется, не пропса же
+    minute: null,
+    time: "hh:mm:ss",
     layoutFromOne: true
   }),
   methods: {
@@ -63,22 +102,28 @@ export default {
     },
     selectHour(idx) {
       this.hour = idx;
-      console.log(this.hour);
+      this.time = this.formatTime(this.hour);
+      this.arrow
+        .map(arr => {
+          arr.show = false
+          if(arr.idx === idx || arr.idx - 12 === idx){
+            arr.show = true
+          }
+        })
     },
     nextHourLayout() {
       this.layoutFromOne = !this.layoutFromOne;
+    },
+    formatTime(hour) {
+      return `${hour}:00:00`; // строковый формат поменять на числовой
     }
-  },
+  }, 
   computed: {
-    formatDate: () => {
-      if (this.date) {
-        console.log(this.date);
-        if (typeof this.date === Date) {
-          return `${this.date.getHours()}:${this.date.getMinutes()}:${this.date.getSeconds()}`;
-        }
-        return this.date;
+    selectedTime(){
+      if(!this.layoutFromOne){
+        return this.hour + 12 + ':00:00' // строковый формат поменять на числовой
       }
-      return new Date();
+      return this.time
     }
   }
 };
@@ -86,7 +131,7 @@ export default {
 
 
 
-<style scoped>
+<style lang="scss" scoped>
 * {
   margin: 0;
   padding: 0;
@@ -109,14 +154,16 @@ export default {
   height: 50px;
   display: flex;
   align-items: center;
-  transform-origin: 100%;
+  transform-origin: 89%;
   position: absolute;
   bottom: -1.5rem;
 }
 .container {
+  text-align: center;
   align-items: center;
   transform: rotate(90deg);
   transform-origin: 100%;
+  top: 1rem;
   position: absolute;
 }
 .root {
@@ -126,11 +173,26 @@ export default {
   align-items: center;
 }
 .square {
-  border: 1px solid black;
+  border: none;
+  background: none;
+  z-index: 30;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
-  font-size: 15px;
+  color: #000;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.clock-hand {
+  position: absolute;
+  border: none;
+  transform-origin: 0%;
+  transform: rotate(1deg);
+  height: 2px;
+  width: 120px;
+}
+.blockActive {
+  border: 1px solid #000;
 }
 .select::before {
   color: #868686;
@@ -138,10 +200,13 @@ export default {
   text-transform: uppercase;
   padding: 5px;
 }
+.btn-field {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .btn-picture {
   width: 1.8rem;
-  height: inherit;
-  margin: 0.2rem 0.2rem;
 }
 .btn-time {
   border: 0px;
@@ -151,9 +216,20 @@ export default {
   right: 0;
   width: 2.5rem;
 }
+
+.btn-next {
+  margin-top: 1.8rem;
+  border-radius: 50%;
+  border: 2px solid rgb(104, 104, 104);
+  width: 3rem;
+  height: 3rem;
+  background: none;
+}
 .placeholder {
-  position: absolute;
-  display: none;
+  display: block;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1rem;
 }
 .clock-wrapper {
   position: absolute;
@@ -161,7 +237,6 @@ export default {
   right: 0;
   opacity: 0;
   top: -400px;
-  margin: 0 auto;
   border: 10px solid #ccc;
   width: 300px;
   height: 300px;
@@ -170,7 +245,6 @@ export default {
   display: none;
   text-align: center;
   z-index: -1;
-  box-shadow: 5px 10px 10px rgb(107, 107, 107);
 }
 .wrapper {
   left: 0;
@@ -190,7 +264,6 @@ export default {
   opacity: 1;
   top: 20px;
 }
-
 .clock {
   position: relative;
   z-index: 10;
@@ -208,18 +281,12 @@ export default {
   display: flex;
   justify-content: center;
 }
-.btn-next {
-  margin-top: 2rem;
-}
-.btn-next img {
-  width: 2rem;
-}
 .slide-fade-enter {
   transform: translateY(-200px);
   opacity: 0;
 }
 .slide-fade-enter-active {
-  transition: all .3s;
+  transition: all 0.3s;
 }
 .slide-fade-enter-to {
   transform: translateY(10px);
@@ -228,7 +295,8 @@ export default {
 .slide-fade-leave-active {
   transition: all 0.3s;
 }
-.slide-fade-leave-to, .slide-fade-leave {
+.slide-fade-leave-to,
+.slide-fade-leave {
   transform: translateY(-200px);
   opacity: 0;
 }
