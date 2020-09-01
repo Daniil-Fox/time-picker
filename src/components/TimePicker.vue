@@ -19,7 +19,7 @@
             <div class="clock" :style="{ backgroundColor }">
               <div
                 class="clock-theme"
-                :style="{ width, 'height': width, backgroundSize: width }"
+                :style="{ width, height: width, backgroundSize: width }"
               >
                 <div
                   class="container"
@@ -30,7 +30,7 @@
                   <div
                     class="block"
                     :style="{
-                      transform: `rotate(${key.idx * 30}deg)`,
+                      transform: `rotate(${key.idx * 30}deg)`
                     }"
                   >
                     <select
@@ -42,8 +42,7 @@
                     <button
                       class="square"
                       :style="{
-                        transform: `rotate(${270 - key.idx * 30}deg)`,
-                        
+                        transform: `rotate(${270 - key.idx * 30}deg)`
                       }"
                       @click="selectHour(key.idx)"
                     >
@@ -64,7 +63,6 @@
   </section>
 </template>
 
-
 <script>
 export default {
   props: {
@@ -74,22 +72,22 @@ export default {
   },
   data: () => ({
     arrow: [
-      {idx: 1, show: false},
-      {idx: 2, show: false},
-      {idx: 3, show: false},
-      {idx: 4, show: false},
-      {idx: 5, show: false},
-      {idx: 6, show: false},
-      {idx: 7, show: false},
-      {idx: 8, show: false},
-      {idx: 9, show: false},
-      {idx: 10, show: false},
-      {idx: 11, show: false},
-      {idx: 12, show: false},
+      { idx: 1, show: false },
+      { idx: 2, show: false },
+      { idx: 3, show: false },
+      { idx: 4, show: false },
+      { idx: 5, show: false },
+      { idx: 6, show: false },
+      { idx: 7, show: false },
+      { idx: 8, show: false },
+      { idx: 9, show: false },
+      { idx: 10, show: false },
+      { idx: 11, show: false },
+      { idx: 12, show: false }
     ],
 
     active: false,
-    
+
     hour: null, //здесь тип не определяется, не пропса же
     minute: null,
     time: "hh:mm:ss",
@@ -103,13 +101,12 @@ export default {
     selectHour(idx) {
       this.hour = idx;
       this.time = this.formatTime(this.hour);
-      this.arrow
-        .map(arr => {
-          arr.show = false
-          if(arr.idx === idx || arr.idx - 12 === idx){
-            arr.show = true
-          }
-        })
+      this.arrow.map(arr => {
+        arr.show = false;
+        if (arr.idx === idx || arr.idx - 12 === idx) {
+          arr.show = true;
+        }
+      });
     },
     nextHourLayout() {
       this.layoutFromOne = !this.layoutFromOne;
@@ -117,19 +114,17 @@ export default {
     formatTime(hour) {
       return `${hour}:00:00`; // строковый формат поменять на числовой
     }
-  }, 
+  },
   computed: {
-    selectedTime(){
-      if(!this.layoutFromOne){
-        return this.hour + 12 + ':00:00' // строковый формат поменять на числовой
+    selectedTime() {
+      if (!this.layoutFromOne) {
+        return this.hour + 12 + ":00:00"; // строковый формат поменять на числовой
       }
-      return this.time
+      return this.time;
     }
   }
 };
 </script>
-
-
 
 <style lang="scss" scoped>
 * {
@@ -186,10 +181,10 @@ export default {
 .clock-hand {
   position: absolute;
   border: none;
-  transform-origin: 0%;
+  transform-origin: -30%;
   transform: rotate(1deg);
   height: 2px;
-  width: 120px;
+  width: 130px;
 }
 .blockActive {
   border: 1px solid #000;
