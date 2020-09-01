@@ -6,10 +6,65 @@
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
+       
+         <div v-if="hour && active">
+          <div
+            class="wrapper"
+            :style="{ width: width + '50px', height: width + '200px' }"
+          >
+            <div
+              class="clock-wrapper"
+              :style="{ width, height: width }"
+              :class="{ active }"
+            >
+              <div class="clock" :style="{ backgroundColor }">
+                <div
+                  class="clock-theme"
+                  :style="{ width, height: width, backgroundSize: width }"
+                >
+                  <div
+                    class="container"
+                    :style="{ width: width / 10, heigh: width / 10 }"
+                    v-for="(key, idx) in minutes"
+                    :key="idx"
+                  >
+                    <div
+                      class="block"
+                      :style="{
+                        transform: `rotate(${key.idx * 6}deg)`
+                      }"
+                    >
+                      <select
+                        v-if="key.show"
+                        v-model="key.show"
+                        class="clock-hand"
+                        :style="{ backgroundColor: 'red' }"
+                      />
+                      <button
+                        class="square"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 6}deg)`,
+                          fontSize:'10px'
+                        }"
+                        @click="selectHour(key.idx)"
+                      >
+                        {{ layoutFromOne ? key.idx : key.idx + 12 }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-next" @click="nextHourLayout">
+                <img src="../assets/next.svg" class="btn-picture" />
+              </button>
+            </div>
+          </div>
+        </div>
         <div
           class="wrapper"
           :style="{ width: width + '50px', height: width + '100px' }"
-          v-if="active"
+          v-if="active && !hour "
         >
           <div
             class="clock-wrapper"
@@ -71,21 +126,12 @@ export default {
     value: { type: Date || String } || new Date()
   },
   data: () => ({
-    arrow: [
-      { idx: 1, show: false },
-      { idx: 2, show: false },
-      { idx: 3, show: false },
-      { idx: 4, show: false },
-      { idx: 5, show: false },
-      { idx: 6, show: false },
-      { idx: 7, show: false },
-      { idx: 8, show: false },
-      { idx: 9, show: false },
-      { idx: 10, show: false },
-      { idx: 11, show: false },
-      { idx: 12, show: false }
-    ],
-
+    arrow: new Array(12)
+      .fill(0)
+      .map((buff, idx) => ({ idx: idx + 1, show: false })),
+    minutes: new Array(60)
+      .fill(0)
+      .map((buff, idx) => ({ idx: idx + 1, show: false })),
     active: false,
 
     hour: null, //здесь тип не определяется, не пропса же
@@ -96,6 +142,7 @@ export default {
   methods: {
     clickHandler() {
       console.log(this.backgroundColor);
+      console.log(this.arrow);
       this.active = !this.active;
     },
     selectHour(idx) {
@@ -136,7 +183,7 @@ export default {
   border: none;
   background: #ececec;
   border-radius: 50px 50px 50px 50px;
-  width: 40vh;
+  width: 300px;
   height: 2.2rem;
   display: flex;
   flex-direction: column;
