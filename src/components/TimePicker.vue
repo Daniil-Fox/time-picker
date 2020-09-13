@@ -1,57 +1,154 @@
 <template>
   <section style="root">
     <div class="select" :style="{ width }">
-      <p class="placeholder">{{ this.time }}</p>
+      <p class="placeholder">{{ selectedTime }}</p>
       <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
+        <!-- <div v-if="hour && active">
+          <div
+            class="wrapper"
+            :style="{ width: width + '50px', height: width + '200px' }"
+          >
+            <div
+              class="clock-wrapper"
+              :style="{ width, height: width }"
+              :class="{ active }"
+            >
+              <div class="clock" :style="{ backgroundColor }">
+                <div
+                  class="clock-theme"
+                  :style="{ width, height: width, backgroundSize: width }"
+                >
+                  <div
+                    class="container"
+                    :style="{ width: width / 10, heigh: width / 10 }"
+                    v-for="(key, idx) in minutes"
+                    :key="idx"
+                  >
+                    <div
+                      class="block"
+                      :style="{
+                        transform: `rotate(${key.idx * 6}deg)`
+                      }"
+                    >
+                      <select
+                        v-if="key.show"
+                        v-model="key.show"
+                        class="clock-hand"
+                        :style="{ backgroundColor: 'red' }"
+                      />
+                      <button
+                        class="square"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 6}deg)`,
+                          fontSize:'10px'
+                        }"
+                        @click="selectHour(key.idx)"
+                      >
+                        {{ layoutFromOne ? key.idx : key.idx + 12 }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-next" @click="nextHourLayout">
+                <img src="../assets/next.svg" class="btn-picture" />
+              </button>
+            </div>
+          </div>
+        </div>-->
         <div
           class="wrapper"
           :style="{ width: width + '50px', height: width + '100px' }"
           v-if="active"
         >
-          <div
-            class="clock-wrapper"
-            :style="{ width, height: width }"
-            :class="{ active }"
-          >
-            <div class="clock" :style="{ 'background-color': backgroundColor }">
-              <div
-                class="clock-theme"
-                :style="{ width, height: width, backgroundSize: width }"
-              >
+          <div class="clock-wrapper" :style="{ width, height: width }" :class="{ active }">
+            
+          <transition name="turnover">
+            <div class="clock" v-if="!next" :style="{ backgroundColor }">
+              <div class="clock-theme" :style="{ width, height: width, backgroundSize: width }">
+                <!-- here new clock for minutes-->
                 <div
                   class="container"
                   :style="{ width: width / 10, heigh: width / 10 }"
-                  v-for="idx in 12"
+                  v-for="(key, idx) in arrow"
                   :key="idx"
                 >
                   <div
                     class="block"
                     :style="{
-                      transform: `rotate(${idx * 30}deg)`,
-                      width: width / 2,
-                      height: width / 6
+                      transform: `rotate(${key.idx * 30}deg)`
                     }"
                   >
+                    <select
+                      v-if="key.show"
+                      v-model="key.show"
+                      class="clock-hand"
+                      :style="{ backgroundColor: 'red' }"
+                    />
                     <button
                       class="square"
                       :style="{
-                        transform: `rotate(${270 - idx * 30}deg)`,
-                        width: width / 10,
-                        heigh: width / 10
+                        transform: `rotate(${270 - key.idx * 30}deg)`
                       }"
-                      @click="selectHour(idx)"
-                    >
-                      {{ layoutFromOne ? idx : idx + 12 }}
-                    </button>
+                      @click="selectHour(key.idx)"
+                    >{{ layoutFromOne ? key.idx : key.idx + 12 }}</button>
                   </div>
                 </div>
               </div>
             </div>
-            <button class="btn-next" @click="nextHourLayout">
-              <img src="../assets/next.svg" width="2rem" class="btn-picture" />
+          </transition>
+          <transition name="turnover">
+              <div 
+                  class="clock" 
+                  v-if="next" 
+                  :style="{ backgroundColor }">
+                <div 
+                  class="clock-theme" 
+                  :style="{ width, height: width, backgroundSize: width }">
+                  <!-- here new clock for minutes-->
+                  <div
+                    class="container"
+                    :style="{ width: width / 10, heigh: width / 10 }"
+                    v-for="(key, idx) in minutes"
+                    :key="idx"
+                  >
+                    <div
+                      class="block"
+                      :style="{
+                        transform: `rotate(${key.idx * 6}deg)`
+                      }"
+                    >
+                      <select
+                        v-if="key.show"
+                        v-model="key.show"
+                        class="clock-hand"
+                        :style="{ backgroundColor: 'red' }"
+                      />
+                      <button
+                        class="square"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 6}deg)`,
+                          fontSize: '.7rem'
+                        }"
+                        @click="selectHour(key.idx)"
+                      >{{ key.idx }}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </transition>
+            <button class="btn-next" :class="{disabled: !disabled}" @click="next = false, disabled = false">
+              Back
+            </button>
+            <button  class="btn-next" :class="{disabled}" @click="nextHourLayout">
+              <img src="../assets/next.svg" class="btn-picture" />
+            </button>
+            <button class="btn-next" :class="{disabled}" @click="next= true, disabled = true">
+              Next
             </button>
           </div>
         </div>
@@ -59,6 +156,7 @@
     </div>
   </section>
 </template>
+
 <script>
 export default {
   props: {
@@ -67,31 +165,57 @@ export default {
     value: { type: Date || String } || new Date()
   },
   data: () => ({
+    arrow: new Array(12)
+      .fill(0)
+      .map((buff, idx) => ({ idx: idx + 1, show: false })),
+    minutes: new Array(60)
+      .fill(0)
+      .map((buff, idx) => ({ idx: idx + 1, show: false })),
     active: false,
-    hour: Number,
-    minute: Number,
+    next: false,
+    disabled: false,
+    hour: null, //здесь тип не определяется, не пропса же
+    minute: null,
     time: "hh:mm:ss",
     layoutFromOne: true
   }),
   methods: {
     clickHandler() {
       console.log(this.backgroundColor);
+      console.log(this.arrow);
       this.active = !this.active;
     },
     selectHour(idx) {
       this.hour = idx;
       this.time = this.formatTime(this.hour);
+      this.arrow.map(arr => {
+        arr.show = false;
+        if (arr.idx === idx || arr.idx - 12 === idx) {
+          arr.show = true;
+        }
+      });
     },
     nextHourLayout() {
       this.layoutFromOne = !this.layoutFromOne;
     },
     formatTime(hour) {
-      return `${hour}:00:00`;
-    }
+      return `${hour}:00:00`; // строковый формат поменять на числовой
+    },
+    style() {}
+  },
+  computed: {
+    selectedTime() {
+      if (!this.layoutFromOne) {
+        return this.hour + 12 + ":00:00"; // строковый формат поменять на числовой
+      }
+      return this.time;
+    },
+    
   }
 };
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
 * {
   margin: 0;
   padding: 0;
@@ -101,7 +225,7 @@ export default {
   border: none;
   background: #ececec;
   border-radius: 50px 50px 50px 50px;
-  width: 40vh;
+  width: 300px;
   height: 2.2rem;
   display: flex;
   flex-direction: column;
@@ -111,10 +235,8 @@ export default {
 }
 .block {
   width: 150px;
-
   height: 50px;
   display: flex;
-
   align-items: center;
   transform-origin: 89%;
   position: absolute;
@@ -143,7 +265,18 @@ export default {
   color: #000;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 700;
+}
+.clock-hand {
+  position: absolute;
+  border: none;
+  transform-origin: -30%;
+  transform: rotate(1deg);
+  height: 2px;
+  width: 130px;
+}
+.blockActive {
+  border: 1px solid #000;
 }
 .select::before {
   color: #868686;
@@ -151,10 +284,13 @@ export default {
   text-transform: uppercase;
   padding: 5px;
 }
+.btn-field {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .btn-picture {
   width: 1.8rem;
-  height: inherit;
-  margin: 0.2rem 0.2rem;
 }
 .btn-time {
   border: 0px;
@@ -164,11 +300,26 @@ export default {
   right: 0;
   width: 2.5rem;
 }
+
+.btn-next {
+  margin-top: 1.8rem;
+  border-radius: 50%;
+  border: 2px solid rgb(104, 104, 104);
+  width: 3rem;
+  height: 3rem;
+  background: none;
+  cursor: pointer;
+}
 .placeholder {
   display: block;
   text-transform: uppercase;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 1rem;
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 .clock-wrapper {
   position: absolute;
@@ -184,7 +335,6 @@ export default {
   display: none;
   text-align: center;
   z-index: -1;
-  box-shadow: 5px 10px 10px rgb(107, 107, 107);
 }
 .wrapper {
   left: 0;
@@ -196,7 +346,7 @@ export default {
   top: 30px;
   display: flex;
   justify-content: center;
-  overflow: hidden;
+  // overflow: hidden;
   z-index: -1;
 }
 .active {
@@ -204,7 +354,6 @@ export default {
   opacity: 1;
   top: 20px;
 }
-
 .clock {
   position: relative;
   z-index: 10;
@@ -221,12 +370,6 @@ export default {
   background-size: 300px;
   display: flex;
   justify-content: center;
-}
-.btn-next {
-  margin-top: 1.8rem;
-  border-radius: 50%;
-  border: 1px solid rgb(75, 75, 75);
-  padding: 0.1rem;
 }
 .slide-fade-enter {
   transform: translateY(-200px);
@@ -246,5 +389,22 @@ export default {
 .slide-fade-leave {
   transform: translateY(-200px);
   opacity: 0;
+}
+.turnover-enter-active {
+  transition: all .2s ease-in;
+}
+.turnover-leave-active {
+  // transition: all .3s;
+  // position: absolute;
+  transform: rotate(-50deg);
+}
+.turnover-enter, .turnover-leave-to
+/* .slide-fade-leave-active до версии 2.1.8 */ {
+  transform: rotate(-50deg);
+}
+.disabled {
+  background: #ccc;
+  pointer-events: none; 
+  cursor: default;
 }
 </style>
