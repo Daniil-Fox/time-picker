@@ -6,8 +6,7 @@
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
-       
-         <div v-if="hour && active">
+        <!-- <div v-if="hour && active">
           <div
             class="wrapper"
             :style="{ width: width + '50px', height: width + '200px' }"
@@ -60,22 +59,18 @@
               </button>
             </div>
           </div>
-        </div>
+        </div>-->
         <div
           class="wrapper"
           :style="{ width: width + '50px', height: width + '100px' }"
-          v-if="active && !hour "
+          v-if="active"
         >
-          <div
-            class="clock-wrapper"
-            :style="{ width, height: width }"
-            :class="{ active }"
-          >
-            <div class="clock" :style="{ backgroundColor }">
-              <div
-                class="clock-theme"
-                :style="{ width, height: width, backgroundSize: width }"
-              >
+          <div class="clock-wrapper" :style="{ width, height: width }" :class="{ active }">
+            
+          <transition name="turnover">
+            <div class="clock" v-if="!next" :style="{ backgroundColor }">
+              <div class="clock-theme" :style="{ width, height: width, backgroundSize: width }">
+                <!-- here new clock for minutes-->
                 <div
                   class="container"
                   :style="{ width: width / 10, heigh: width / 10 }"
@@ -100,16 +95,60 @@
                         transform: `rotate(${270 - key.idx * 30}deg)`
                       }"
                       @click="selectHour(key.idx)"
-                    >
-                      {{ layoutFromOne ? key.idx : key.idx + 12 }}
-                    </button>
+                    >{{ layoutFromOne ? key.idx : key.idx + 12 }}</button>
                   </div>
                 </div>
               </div>
             </div>
-
-            <button class="btn-next" @click="nextHourLayout">
+          </transition>
+          <transition name="turnover">
+              <div 
+                  class="clock" 
+                  v-if="next" 
+                  :style="{ backgroundColor }">
+                <div 
+                  class="clock-theme" 
+                  :style="{ width, height: width, backgroundSize: width }">
+                  <!-- here new clock for minutes-->
+                  <div
+                    class="container"
+                    :style="{ width: width / 10, heigh: width / 10 }"
+                    v-for="(key, idx) in minutes"
+                    :key="idx"
+                  >
+                    <div
+                      class="block"
+                      :style="{
+                        transform: `rotate(${key.idx * 6}deg)`
+                      }"
+                    >
+                      <select
+                        v-if="key.show"
+                        v-model="key.show"
+                        class="clock-hand"
+                        :style="{ backgroundColor: 'red' }"
+                      />
+                      <button
+                        class="square"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 6}deg)`,
+                          fontSize: '.7rem'
+                        }"
+                        @click="selectHour(key.idx)"
+                      >{{ key.idx }}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </transition>
+            <button class="btn-next" :class="{disabled: !disabled}" @click="next = false, disabled = false">
+              Back
+            </button>
+            <button  class="btn-next" :class="{disabled}" @click="nextHourLayout">
               <img src="../assets/next.svg" class="btn-picture" />
+            </button>
+            <button class="btn-next" :class="{disabled}" @click="next= true, disabled = true">
+              Next
             </button>
           </div>
         </div>
@@ -133,7 +172,8 @@ export default {
       .fill(0)
       .map((buff, idx) => ({ idx: idx + 1, show: false })),
     active: false,
-
+    next: false,
+    disabled: false,
     hour: null, //здесь тип не определяется, не пропса же
     minute: null,
     time: "hh:mm:ss",
@@ -160,7 +200,8 @@ export default {
     },
     formatTime(hour) {
       return `${hour}:00:00`; // строковый формат поменять на числовой
-    }
+    },
+    style() {}
   },
   computed: {
     selectedTime() {
@@ -168,7 +209,8 @@ export default {
         return this.hour + 12 + ":00:00"; // строковый формат поменять на числовой
       }
       return this.time;
-    }
+    },
+    
   }
 };
 </script>
@@ -266,12 +308,18 @@ export default {
   width: 3rem;
   height: 3rem;
   background: none;
+  cursor: pointer;
 }
 .placeholder {
   display: block;
   text-transform: uppercase;
   font-weight: 600;
   font-size: 1rem;
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 .clock-wrapper {
   position: absolute;
@@ -298,7 +346,7 @@ export default {
   top: 30px;
   display: flex;
   justify-content: center;
-  overflow: hidden;
+  // overflow: hidden;
   z-index: -1;
 }
 .active {
@@ -341,5 +389,22 @@ export default {
 .slide-fade-leave {
   transform: translateY(-200px);
   opacity: 0;
+}
+.turnover-enter-active {
+  transition: all .2s ease-in;
+}
+.turnover-leave-active {
+  // transition: all .3s;
+  // position: absolute;
+  transform: rotate(-50deg);
+}
+.turnover-enter, .turnover-leave-to
+/* .slide-fade-leave-active до версии 2.1.8 */ {
+  transform: rotate(-50deg);
+}
+.disabled {
+  background: #ccc;
+  pointer-events: none; 
+  cursor: default;
 }
 </style>
