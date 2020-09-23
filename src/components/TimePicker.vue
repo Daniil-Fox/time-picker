@@ -6,60 +6,6 @@
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
-        <!-- <div v-if="hour && active">
-          <div
-            class="wrapper"
-            :style="{ width: width + '50px', height: width + '200px' }"
-          >
-            <div
-              class="clock-wrapper"
-              :style="{ width, height: width }"
-              :class="{ active }"
-            >
-              <div class="clock" :style="{ backgroundColor }">
-                <div
-                  class="clock-theme"
-                  :style="{ width, height: width, backgroundSize: width }"
-                >
-                  <div
-                    class="container"
-                    :style="{ width: width / 10, heigh: width / 10 }"
-                    v-for="(key, idx) in minutes"
-                    :key="idx"
-                  >
-                    <div
-                      class="block"
-                      :style="{
-                        transform: `rotate(${key.idx * 6}deg)`
-                      }"
-                    >
-                      <select
-                        v-if="key.show"
-                        v-model="key.show"
-                        class="clock-hand"
-                        :style="{ backgroundColor: 'red' }"
-                      />
-                      <button
-                        class="square"
-                        :style="{
-                          transform: `rotate(${270 - key.idx * 6}deg)`,
-                          fontSize:'10px'
-                        }"
-                        @click="selectHour(key.idx)"
-                      >
-                        {{ layoutFromOne ? key.idx : key.idx + 12 }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <button class="btn-next" @click="nextHourLayout">
-                <img src="../assets/next.svg" class="btn-picture" />
-              </button>
-            </div>
-          </div>
-        </div>-->
         <div
           class="wrapper"
           :style="{ width: width + '50px', height: width + '100px' }"
@@ -194,7 +140,7 @@ export default {
     disabled: false,
     hour: null, //здесь тип не определяется, не пропса же
     minute: null,
-    time: "hh:mm:ss",
+    time: "hh:mm",
     
   }),
   methods: {
@@ -224,8 +170,8 @@ export default {
       });
     },
     formatTime() {
-       if (this.hour && this.minute) {
-         return  `${this.hour}:${this.minute}`
+       if (this.hour && this.minute) {    
+          return  this.minute < 10 ? `${this.hour}:0${this.minute}` :  `${this.hour}:${this.minute}`
        }
       if(this.hour){
         return `${this.hour}:00`
