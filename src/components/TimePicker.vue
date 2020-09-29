@@ -34,15 +34,24 @@
                       v-if="key.show"
                       v-model="key.show"
                       class="clock-hand"
-                      :style="{ backgroundColor: 'red' }"
+                      :style="{ backgroundColor: 'red'}"
                     />
                     <button
-                      class="square"
+                      class="square sq1"
                       :style="{
                         transform: `rotate(${270 - key.idx * 30}deg)`
                       }"
                       @click="selectHour(key.idx)"
-                    >{{ layoutFromOne ? key.idx : key.idx + 12 }}</button>
+                    >{{ key.idx  }}</button>
+
+                    <button
+                      class="square sq2"
+                      :style="{
+                        transform: `rotate(${270 - key.idx * 30}deg)`,
+                      }"
+                      @click="selectHour(key.idx + 12)"
+                    >{{ key.idx + 12 }}</button>
+                    
                   </div>
                 </div>
               </div>
@@ -91,9 +100,6 @@
             <button class="btn-next" :class="{disabled: !disabled}" @click="next = false, disabled = false">
               Back
             </button>
-            <button  class="btn-next" :class="{disabled}" @click="nextHourLayout">
-              <img src="../assets/next.svg" class="btn-picture" />
-            </button>
             <button class="btn-next" :class="{disabled}" @click="next= true, disabled = true">
               Next
             </button>
@@ -123,8 +129,8 @@ export default {
     disabled: false,
     hour: null, //здесь тип не определяется, не пропса же
     minute: null,
-    time: "hh:mm:ss",
-    layoutFromOne: true
+    time: "hh:mm",
+    
   }),
   methods: {
     clickHandler() {
@@ -134,27 +140,40 @@ export default {
     },
     selectHour(idx) {
       this.hour = idx;
-      this.time = this.formatTime(this.hour);
+      this.time = this.formatTime();
       this.arrow.map(arr => {
         arr.show = false;
-        if (arr.idx === idx || arr.idx - 12 === idx) {
+        if (arr.idx === idx || arr.idx + 12 === idx) {
           arr.show = true;
         }
       });
     },
-    nextHourLayout() {
-      this.layoutFromOne = !this.layoutFromOne;
+    selectMinute(idx){
+      this.minute = idx;
+      this.time = this.formatTime();
+      this.minutes.map(min => {
+        min.show = false;
+        if (min.idx === idx) {
+          min.show = true;
+        }
+      });
     },
-    formatTime(hour) {
-      return `${hour}:00:00`; // строковый формат поменять на числовой
+    formatTime() {
+       if (this.hour && this.minute) {    
+          return  this.minute < 10 ? `${this.hour}:0${this.minute}` :  `${this.hour}:${this.minute}`
+       }
+      if(this.hour){
+        return `${this.hour}:00`
+      }
+       else {
+         return '00:00'
+       }
+      
     },
     style() {}
   },
   computed: {
     selectedTime() {
-      if (!this.layoutFromOne) {
-        return this.hour + 12 + ":00:00"; // строковый формат поменять на числовой
-      }
       return this.time;
     },
     
@@ -188,6 +207,7 @@ export default {
   transform-origin: 89%;
   position: absolute;
   bottom: -1.5rem;
+  z-index: -1;
 }
 .container {
   text-align: center;
@@ -213,6 +233,7 @@ export default {
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 1rem;
   font-weight: 700;
+  z-index: 1;
 }
 .clock-hand {
   position: absolute;
@@ -338,20 +359,25 @@ export default {
   opacity: 0;
 }
 .turnover-enter-active {
-  transition: all .2s ease-in;
+  transition: all .2s ease;
 }
-.turnover-leave-active {
-  // transition: all .3s;
-  // position: absolute;
-  transform: rotate(-50deg);
-}
-.turnover-enter, .turnover-leave-to
+
+.turnover-enter
 /* .slide-fade-leave-active до версии 2.1.8 */ {
   transform: rotate(-50deg);
 }
+
+
 .disabled {
   background: #ccc;
   pointer-events: none; 
   cursor: default;
+}
+.sq2 {
+  border: 1px solid rgb(167, 167, 167);
+  border-radius: 50%;
+}
+.btn-active {
+  background: rgb(126, 126, 255);
 }
 </style>
