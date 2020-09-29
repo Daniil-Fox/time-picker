@@ -1,9 +1,19 @@
 <template>
   <section style="root">
     <div class="select" :style="{ width }">
-      <p class="placeholder">{{ selectedTime }}</p>
-      <button class="btn-time" @click="clickHandler">
+      <p 
+        class="placeholder"
+        >{{ selectedTime }}</p>
+      <button 
+        class="btn-time" 
+        @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
+      </button>
+      <button 
+        class="btn-reset" 
+        v-if="hour || minute"
+        @click="reset">
+        <img src="../assets/reset.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
         <div
@@ -11,60 +21,67 @@
           :style="{ width: width + '50px', height: width + '100px' }"
           v-if="active"
         >
-          <div class="clock-wrapper" :style="{ width, height: width }" :class="{ active }">
-            
-          <transition name="turnover">
-            <div class="clock" v-if="!next" :style="{ backgroundColor }">
-              <div class="clock-theme" :style="{ width, height: width, backgroundSize: width }">
-                <!-- here new clock for minutes-->
+          <div
+            class="clock-wrapper"
+            :style="{ width, height: width }"
+            :class="{ active }"
+          >
+            <transition name="turnover">
+              <div class="clock" v-if="!next" :style="{ backgroundColor }">
                 <div
-                  class="container"
-                  :style="{ width: width / 10, heigh: width / 10 }"
-                  v-for="(key, idx) in arrow"
-                  :key="idx"
+                  class="clock-theme"
+                  :style="{ width, height: width, backgroundSize: width }"
                 >
+                  <!-- here new clock for minutes-->
                   <div
-                    class="block"
-                    :style="{
-                      transform: `rotate(${key.idx * 30}deg)`
-                    }"
+                    class="container"
+                    :style="{ width: width / 10, heigh: width / 10 }"
+                    v-for="(key, idx) in arrow"
+                    :key="idx"
                   >
-                    <select
-                      v-if="key.show"
-                      v-model="key.show"
-                      class="clock-hand"
-                      :style="{ backgroundColor: 'red'}"
-                    />
-                    <button
-                      class="square sq1"
+                    <div
+                      class="block"
                       :style="{
-                        transform: `rotate(${270 - key.idx * 30}deg)`
+                        transform: `rotate(${key.idx * 30}deg)`
                       }"
-                      @click="selectHour(key.idx)"
-                    >{{ key.idx  }}</button>
+                    >
+                      <select
+                        v-if="key.show"
+                        v-model="key.show"
+                        class="clock-hand clock-hand-active"
+                        :style="{ backgroundColor: 'red' }"
+                      />
+                      <button
+                        class="square sq1"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 30}deg)`
+                        }"
+                        @click="selectHour(key.idx)"
+                      >
+                        {{ key.idx }}
+                      </button>
 
-                    <button
-                      class="square sq2"
-                      :style="{
-                        transform: `rotate(${270 - key.idx * 30}deg)`,
-                      }"
-                      @click="selectHour(key.idx + 12)"
-                    >{{ key.idx + 12 }}</button>
-                    
+                      <button
+                        class="square sq2"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 30}deg)`
+                        }"
+                        @click="selectHour(key.idx + 12)"
+                      >
+                        {{ key.idx + 12 }}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </transition>
-          <!-- /////////////////////// -->
-          <transition name="turnover">
-              <div 
-                  class="clock" 
-                  v-if="next" 
-                  :style="{ backgroundColor }">
-                <div 
-                  class="clock-theme" 
-                  :style="{ width, height: width, backgroundSize: width }">
+            </transition>
+            <!-- /////////////////////// -->
+            <transition name="turnover">
+              <div class="clock" v-if="next" :style="{ backgroundColor }">
+                <div
+                  class="clock-theme"
+                  :style="{ width, height: width, backgroundSize: width }"
+                >
                   <!-- here new clock for minutes-->
                   <div
                     class="container"
@@ -75,49 +92,51 @@
                     <div
                       class="block"
                       :style="{
-                        transform: `rotate(${key.idx * 6}deg)`,
-                          
+                        transform: `rotate(${key.idx * 30}deg)`
                       }"
                     >
                       <select
                         v-if="key.show"
                         v-model="key.show"
-                        class="clock-hand"
+                        class="clock-hand clock-hand-active"
                         :style="{ backgroundColor: 'red' }"
                       />
-                      <button
-                        class="square"
+                       <button
+                        class="square "
                         :style="{
-                          transform: `rotate(${270 - key.idx * 6}deg)`,
-                          fontSize: '.7rem',
-                          width: '10px',
-                          heigh: '10px',
-                          margin: '-5px',
-                         
-
+                          transform: `rotate(${270 - key.idx * 30}deg)`,
+                      
                         }"
                         :class="{btnActive: selectHour}"
-                        @click="selectMinute(key.idx)"
-                      >{{ key.idx }}</button>
-                      
+                        @click="selectMinute(key.idx * 5)"
+                      >{{ key.idx * 5 }}</button>
                     </div>
                   </div>
                 </div>
               </div>
             </transition>
-            <button class="btn-next" :class="{disabled: !disabled}" @click="next = false, disabled = false">
+            <button
+              class="btn-next"
+              :class="{ disabled: !disabled }"
+              @click="(next = false), (disabled = false)"
+            >
               Back
             </button>
             <!-- <button  class="btn-next" :class="{disabled}" @click="nextHourLayout">
               <img src="../assets/next.svg" class="btn-picture" />
             </button> -->
-            <button class="btn-next" :class="{disabled}" @click="next= true, disabled = true">
+            <button
+              class="btn-next"
+              :class="{ disabled }"
+              @click="(next = true), (disabled = true)"
+            >
               Next
             </button>
           </div>
         </div>
       </transition>
     </div>
+   
   </section>
 </template>
 
@@ -132,16 +151,15 @@ export default {
     arrow: new Array(12)
       .fill(0)
       .map((buff, idx) => ({ idx: idx + 1, show: false })),
-    minutes: new Array(60)
+    minutes: new Array(12)
       .fill(0)
-      .map((buff, idx) => ({ idx: idx + 1, show: false })),
+      .map((buff, idx) => ({ idx, show: false })),
     active: false,
     next: false,
     disabled: false,
     hour: null, //здесь тип не определяется, не пропса же
     minute: null,
-    time: "hh:mm",
-    
+    time: "hh:mm"
   }),
   methods: {
     clickHandler() {
@@ -159,35 +177,46 @@ export default {
         }
       });
     },
-    selectMinute(idx){
+    selectMinute(idx) {
       this.minute = idx;
       this.time = this.formatTime();
       this.minutes.map(min => {
         min.show = false;
-        if (min.idx === idx) {
+        if (min.idx * 5 === idx) {
           min.show = true;
         }
       });
     },
-    formatTime() {
-       if (this.hour && this.minute) {    
-          return  this.minute < 10 ? `${this.hour}:0${this.minute}` :  `${this.hour}:${this.minute}`
-       }
-      if(this.hour){
-        return `${this.hour}:00`
-      }
-       else {
-         return '00:00'
-       }
-      
+    reset() {
+      this.time = "hh:mm"
+      this.hour = null
+      this.minute = null
+      this.arrow.map( a => a.show = false)
+      this.minutes.map( m => m.show = false)
     },
-    style() {}
+    formatTime() {
+      if (this.hour && this.minute) {
+        return this.minute < 10
+          ? `${this.hour}:0${this.minute}`
+          : `${this.hour}:${this.minute}`;
+      }
+      if (this.hour) {
+        return `${this.hour}:00`;
+      }
+      if (this.minute) {
+        return this.minute < 10 
+          ? `00:0${this.minute}`
+          : `00:${this.minute}`
+      }
+      else {
+        return "00:00";
+      }
+    },
   },
   computed: {
     selectedTime() {
       return this.time;
-    },
-    
+    }
   }
 };
 </script>
@@ -197,6 +226,7 @@ export default {
   margin: 0;
   padding: 0;
 }
+
 .select {
   position: relative;
   border: none;
@@ -210,6 +240,7 @@ export default {
   justify-content: center;
   z-index: 10000;
 }
+
 .block {
   width: 150px;
   height: 50px;
@@ -243,9 +274,10 @@ export default {
   color: #000;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 400;
   z-index: 1;
 }
+
 .clock-hand {
   position: absolute;
   border: none;
@@ -370,7 +402,7 @@ export default {
   opacity: 0;
 }
 .turnover-enter-active {
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .turnover-enter
@@ -378,10 +410,9 @@ export default {
   transform: rotate(-50deg);
 }
 
-
 .disabled {
   background: #ccc;
-  pointer-events: none; 
+  pointer-events: none;
   cursor: default;
 }
 .sq2 {
@@ -390,5 +421,13 @@ export default {
 }
 .btn-active {
   background: rgb(126, 126, 255);
+}
+.btn-reset {
+  display: block;
+  position: absolute;
+  border: none;
+  background: none;
+  left: 5px;
+
 }
 </style>
