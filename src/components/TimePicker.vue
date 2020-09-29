@@ -16,6 +16,7 @@
         <img src="../assets/reset.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
+       
         <div
           class="wrapper"
           :style="{ width: width + '50px', height: width + '100px' }"
@@ -76,12 +77,15 @@
               </div>
             </transition>
             <!-- /////////////////////// -->
-            <transition name="turnover">
-              <div class="clock" v-if="next" :style="{ backgroundColor }">
-                <div
-                  class="clock-theme"
-                  :style="{ width, height: width, backgroundSize: width }"
-                >
+           
+          <transition name="turnover">
+              <div 
+                  class="clock" 
+                  v-if="next" 
+                  :style="{ backgroundColor }">
+                <div 
+                  class="clock-theme" 
+                  :style="{ width, height: width, backgroundSize: width }">
                   <!-- here new clock for minutes-->
                   <div
                     class="container"
@@ -151,9 +155,7 @@ export default {
     arrow: new Array(12)
       .fill(0)
       .map((buff, idx) => ({ idx: idx + 1, show: false })),
-    minutes: new Array(12)
-      .fill(0)
-      .map((buff, idx) => ({ idx, show: false })),
+    minutes: new Array(12).fill(0).map((buff, idx) => ({ idx, show: false })),
     active: false,
     next: false,
     disabled: false,
@@ -188,11 +190,11 @@ export default {
       });
     },
     reset() {
-      this.time = "hh:mm"
-      this.hour = null
-      this.minute = null
-      this.arrow.map( a => a.show = false)
-      this.minutes.map( m => m.show = false)
+      this.time = "hh:mm";
+      this.hour = null;
+      this.minute = null;
+      this.arrow.map(a => (a.show = false));
+      this.minutes.map(m => (m.show = false));
     },
     formatTime() {
       if (this.hour && this.minute) {
@@ -204,14 +206,11 @@ export default {
         return `${this.hour}:00`;
       }
       if (this.minute) {
-        return this.minute < 10 
-          ? `00:0${this.minute}`
-          : `00:${this.minute}`
-      }
-      else {
+        return this.minute < 10 ? `00:0${this.minute}` : `00:${this.minute}`;
+      } else {
         return "00:00";
       }
-    },
+    }
   },
   computed: {
     selectedTime() {
@@ -428,6 +427,5 @@ export default {
   border: none;
   background: none;
   left: 5px;
-
 }
 </style>
