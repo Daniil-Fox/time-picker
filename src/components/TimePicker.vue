@@ -165,8 +165,6 @@ export default {
   }),
   methods: {
     clickHandler() {
-      console.log(this.backgroundColor);
-      console.log(this.arrow);
       this.active = !this.active;
     },
     selectHour(idx) {
@@ -178,6 +176,9 @@ export default {
           arr.show = true;
         }
       });
+      setTimeout(() => {
+        this.next = true
+      }, 200)
     },
     selectMinute(idx) {
       this.minute = idx;
@@ -188,6 +189,10 @@ export default {
           min.show = true;
         }
       });
+      setTimeout(() => {
+        this.next = false
+        this.active = false;
+      }, 200)
     },
     reset() {
       this.time = "hh:mm";
