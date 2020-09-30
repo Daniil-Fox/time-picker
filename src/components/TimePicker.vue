@@ -5,6 +5,9 @@
       <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
+      <button class="btn-reset" v-if="hour || minute" @click="reset">
+        <img src="../assets/reset.svg" width="3rem" class="btn-picture" />
+      </button>
       <transition name="slide-fade">
         <div
           class="wrapper"
@@ -38,7 +41,7 @@
                       <select
                         v-if="key.show"
                         v-model="key.show"
-                        class="clock-hand"
+                        class="clock-hand clock-hand-active"
                         :style="{ backgroundColor: 'red' }"
                       />
                       <button
@@ -65,6 +68,8 @@
                 </div>
               </div>
             </transition>
+            <!-- /////////////////////// -->
+
             <transition name="turnover">
               <div class="clock" v-if="next" :style="{ backgroundColor }">
                 <div
@@ -87,16 +92,16 @@
                       <select
                         v-if="key.show"
                         v-model="key.show"
-                        class="clock-hand"
+                        class="clock-hand clock-hand-active"
                         :style="{ backgroundColor: 'red' }"
                       />
                       <button
-                        class="square"
+                        class="square "
                         :style="{
-                          transform: `rotate(${270 - key.idx * 30}deg)`,
-                          fontSize: '.7rem'
+                          transform: `rotate(${270 - key.idx * 30}deg)`
                         }"
-                        @click="selectHour(key.idx)"
+                        :class="{ btnActive: selectHour }"
+                        @click="selectMinute(key.idx * 5)"
                       >
                         {{ key.idx * 5 }}
                       </button>
@@ -108,15 +113,12 @@
             <button
               class="btn-next"
               :class="{ disabled: !disabled }"
-              @click="(next = false), (disabled = false)"
+              @click="nextTo"
             >
               Back
             </button>
-            <button
-              class="btn-next"
-              :class="{ disabled }"
-              @click="(next = true), (disabled = true)"
-            >
+            <button class="btn-next" :class="{ disabled }" @click="nextTo">
+              <!-- (next = true), (disabled = true) -->
               Next
             </button>
           </div>
@@ -137,9 +139,7 @@ export default {
     arrow: new Array(12)
       .fill(0)
       .map((buff, idx) => ({ idx: idx + 1, show: false })),
-    minutes: new Array(12)
-      .fill(0)
-      .map((buff, idx) => ({ idx: idx + 1, show: false })),
+    minutes: new Array(12).fill(0).map((buff, idx) => ({ idx, show: false })),
     active: false,
     next: false,
     disabled: false,
@@ -149,8 +149,6 @@ export default {
   }),
   methods: {
     clickHandler() {
-      console.log(this.backgroundColor);
-      console.log(this.arrow);
       this.active = !this.active;
     },
     selectHour(idx) {
@@ -162,16 +160,32 @@ export default {
           arr.show = true;
         }
       });
+      this.disabled = true;
+      setTimeout(() => {
+        this.next = true;
+      }, 200);
     },
     selectMinute(idx) {
       this.minute = idx;
       this.time = this.formatTime();
       this.minutes.map(min => {
         min.show = false;
-        if (min.idx === idx) {
+        if (min.idx * 5 === idx) {
           min.show = true;
         }
       });
+      setTimeout(() => {
+        this.next = false;
+        this.active = false;
+        this.disabled = false;
+      }, 200);
+    },
+    reset() {
+      this.time = "hh:mm";
+      this.hour = null;
+      this.minute = null;
+      this.arrow.map(a => (a.show = false));
+      this.minutes.map(m => (m.show = false));
     },
     formatTime() {
       if (this.hour && this.minute) {
@@ -181,11 +195,22 @@ export default {
       }
       if (this.hour) {
         return `${this.hour}:00`;
+      }
+      if (this.minute) {
+        this.arrow.map(arr => {
+          if (arr.idx === 12) {
+            arr.show = true;
+          }
+        });
+        return this.minute < 10 ? `24:0${this.minute}` : `24:${this.minute}`;
       } else {
-        return "00:00";
+        return "24:00";
       }
     },
-    style() {}
+    nextTo() {
+      this.next = !this.next;
+      this.disabled = !this.disabled;
+    }
   },
   computed: {
     selectedTime() {
@@ -196,10 +221,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital@0;1&display=swap");
+
 * {
   margin: 0;
   padding: 0;
+  font-family: "Roboto", sans-serif;
 }
+
 .select {
   position: relative;
   border: none;
@@ -213,6 +242,7 @@ export default {
   justify-content: center;
   z-index: 10000;
 }
+
 .block {
   width: 150px;
   height: 50px;
@@ -246,9 +276,10 @@ export default {
   color: #000;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 400;
   z-index: 1;
 }
+
 .clock-hand {
   position: absolute;
   border: none;
@@ -392,5 +423,12 @@ export default {
 }
 .btn-active {
   background: rgb(126, 126, 255);
+}
+.btn-reset {
+  display: block;
+  position: absolute;
+  border: none;
+  background: none;
+  left: 5px;
 }
 </style>
