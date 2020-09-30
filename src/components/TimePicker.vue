@@ -1,35 +1,20 @@
 <template>
   <section style="root">
-    <div class="select" :style="{ width }">
+    <div class="select">
       <p class="placeholder">{{ selectedTime }}</p>
       <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
-      <button class="btn-reset" v-if="hour || minute" @click="reset">
+      <button class="btn-reset" v-if="(hour && minute) || (hour && minute == 0)" @click="reset">
         <img src="../assets/reset.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
-        <div
-          class="wrapper"
-          v-if="active"
-        >
-          <div
-            class="clock-wrapper"
-            :style="{ width, height: width }"
-            :class="{ active }"
-          >
+        <div class="wrapper" v-if="active">
+          <div class="clock-wrapper" :class="{ active }">
             <transition name="turnover">
               <div class="clock" v-if="!next" :style="{ backgroundColor }">
-                <div
-                  class="clock-theme"
-                  :style="{ width, height: width, backgroundSize: width }"
-                >
-                  <div
-                    class="container"
-                   
-                    v-for="(key, idx) in arrow"
-                    :key="idx"
-                  >
+                <div class="clock-theme">
+                  <div class="container" v-for="(key, idx) in hours" :key="idx">
                     <div
                       class="block"
                       :style="{
@@ -68,14 +53,10 @@
             </transition>
             <transition name="turnover">
               <div class="clock" v-if="next" :style="{ backgroundColor }">
-                <div
-                  class="clock-theme"
-                  :style="{ width, height: width, backgroundSize: width }"
-                >
+                <div class="clock-theme">
                   <!-- here new clock for minutes-->
                   <div
                     class="container"
-                    :style="{ width: width / 10, heigh: width / 10 }"
                     v-for="(key, idx) in minutes"
                     :key="idx"
                   >
@@ -106,7 +87,6 @@
                 </div>
               </div>
             </transition>
-          
           </div>
         </div>
       </transition>
@@ -118,17 +98,18 @@
 export default {
   props: {
     backgroundColor: { type: String } || "E5E5E5",
-    width: String,
+    // width: String,
     value: { type: Date || String } || new Date()
   },
   data: () => ({
-    arrow: new Array(12)
+    hours: new Array(12)
       .fill(0)
       .map((buff, idx) => ({ idx: idx + 1, show: false })),
-    minutes: new Array(12).fill(0).map((buff, idx) => ({ idx, show: false })),
+    minutes: new Array(12)
+      .fill(0)
+      .map((buff, idx) => ({ idx, show: false })),
     active: false,
     next: false,
-    disabled: false,
     hour: null, //здесь тип не определяется, не пропса же
     minute: null,
     time: "hh:mm"
@@ -136,17 +117,23 @@ export default {
   methods: {
     clickHandler() {
       this.active = !this.active;
+      this.next = false
     },
     selectHour(idx) {
       this.hour = idx;
       this.time = this.formatTime();
-      this.arrow.map(arr => {
+      this.hours.map(arr => {
         arr.show = false;
         if (arr.idx === idx || arr.idx + 12 === idx) {
           arr.show = true;
         }
       });
-      this.disabled = true;
+      this.minutes.map(m => {
+        if(!this.minute && m.idx === 0) {
+          m.show = true
+          this.minute = 0
+        }
+      })
       setTimeout(() => {
         this.next = true;
       }, 200);
@@ -163,14 +150,13 @@ export default {
       setTimeout(() => {
         this.next = false;
         this.active = false;
-        this.disabled = false;
       }, 200);
     },
     reset() {
       this.time = "hh:mm";
       this.hour = null;
       this.minute = null;
-      this.arrow.map(a => (a.show = false));
+      this.hours.map(a => (a.show = false));
       this.minutes.map(m => (m.show = false));
     },
     formatTime() {
@@ -182,18 +168,10 @@ export default {
       if (this.hour) {
         return `${this.hour}:00`;
       }
-      if (this.minute) {
-        this.arrow.map(arr => {
-          if (arr.idx === 12) {
-            arr.show = true;
-          }
-        });
-        return this.minute < 10 ? `24:0${this.minute}` : `24:${this.minute}`;
-      } else {
+       else {
         return "24:00";
       }
-    },
-   
+    }
   },
   computed: {
     selectedTime() {
@@ -296,8 +274,6 @@ export default {
   right: 0;
   width: 2.5rem;
 }
-
-
 .placeholder {
   display: block;
   text-transform: uppercase;
@@ -387,11 +363,6 @@ export default {
   transform: rotate(-50deg);
 }
 
-.disabled {
-  background: #ccc;
-  pointer-events: none;
-  cursor: default;
-}
 .sq2 {
   border: 1px solid rgb(167, 167, 167);
   border-radius: 50%;
