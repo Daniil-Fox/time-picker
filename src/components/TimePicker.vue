@@ -6,65 +6,71 @@
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
-       
         <div
           class="wrapper"
           :style="{ width: width + '50px', height: width + '100px' }"
           v-if="active"
         >
-          <div class="clock-wrapper" :style="{ width, height: width }" :class="{ active }">
-            
-          <transition name="turnover">
-            <div class="clock" v-if="!next" :style="{ backgroundColor }">
-              <div class="clock-theme" :style="{ width, height: width, backgroundSize: width }">
-                <!-- here new clock for minutes-->
+          <div
+            class="clock-wrapper"
+            :style="{ width, height: width }"
+            :class="{ active }"
+          >
+            <transition name="turnover">
+              <div class="clock" v-if="!next" :style="{ backgroundColor }">
                 <div
-                  class="container"
-                  :style="{ width: width / 10, heigh: width / 10 }"
-                  v-for="(key, idx) in arrow"
-                  :key="idx"
+                  class="clock-theme"
+                  :style="{ width, height: width, backgroundSize: width }"
                 >
+                  <!-- here new clock for minutes-->
                   <div
-                    class="block"
-                    :style="{
-                      transform: `rotate(${key.idx * 30}deg)`
-                    }"
+                    class="container"
+                    :style="{ width: width / 10, heigh: width / 10 }"
+                    v-for="(key, idx) in arrow"
+                    :key="idx"
                   >
-                    <select
-                      v-if="key.show"
-                      v-model="key.show"
-                      class="clock-hand"
-                      :style="{ backgroundColor: 'red'}"
-                    />
-                    <button
-                      class="square sq1"
+                    <div
+                      class="block"
                       :style="{
-                        transform: `rotate(${270 - key.idx * 30}deg)`
+                        transform: `rotate(${key.idx * 30}deg)`
                       }"
-                      @click="selectHour(key.idx)"
-                    >{{ key.idx  }}</button>
+                    >
+                      <select
+                        v-if="key.show"
+                        v-model="key.show"
+                        class="clock-hand"
+                        :style="{ backgroundColor: 'red' }"
+                      />
+                      <button
+                        class="square sq1"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 30}deg)`
+                        }"
+                        @click="selectHour(key.idx)"
+                      >
+                        {{ key.idx }}
+                      </button>
 
-                    <button
-                      class="square sq2"
-                      :style="{
-                        transform: `rotate(${270 - key.idx * 30}deg)`,
-                      }"
-                      @click="selectHour(key.idx + 12)"
-                    >{{ key.idx + 12 }}</button>
-                    
+                      <button
+                        class="square sq2"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 30}deg)`
+                        }"
+                        @click="selectHour(key.idx + 12)"
+                      >
+                        {{ key.idx + 12 }}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </transition>
-          <transition name="turnover">
-              <div 
-                  class="clock" 
-                  v-if="next" 
-                  :style="{ backgroundColor }">
-                <div 
-                  class="clock-theme" 
-                  :style="{ width, height: width, backgroundSize: width }">
+            </transition>
+            <transition name="turnover">
+              <div class="clock" v-if="next" :style="{ backgroundColor }">
+                <div
+                  class="clock-theme"
+                  :style="{ width, height: width, backgroundSize: width }"
+                >
                   <!-- here new clock for minutes-->
                   <div
                     class="container"
@@ -91,16 +97,26 @@
                           fontSize: '.7rem'
                         }"
                         @click="selectHour(key.idx)"
-                      >{{ key.idx*5 }}</button>
+                      >
+                        {{ key.idx * 5 }}
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </transition>
-            <button class="btn-next" :class="{disabled: !disabled}" @click="next = false, disabled = false">
+            <button
+              class="btn-next"
+              :class="{ disabled: !disabled }"
+              @click="(next = false), (disabled = false)"
+            >
               Back
             </button>
-            <button class="btn-next" :class="{disabled}" @click="next= true, disabled = true">
+            <button
+              class="btn-next"
+              :class="{ disabled }"
+              @click="(next = true), (disabled = true)"
+            >
               Next
             </button>
           </div>
@@ -129,8 +145,7 @@ export default {
     disabled: false,
     hour: null, //здесь тип не определяется, не пропса же
     minute: null,
-    time: "hh:mm",
-    
+    time: "hh:mm"
   }),
   methods: {
     clickHandler() {
@@ -148,7 +163,7 @@ export default {
         }
       });
     },
-    selectMinute(idx){
+    selectMinute(idx) {
       this.minute = idx;
       this.time = this.formatTime();
       this.minutes.map(min => {
@@ -159,24 +174,23 @@ export default {
       });
     },
     formatTime() {
-       if (this.hour && this.minute) {    
-          return  this.minute < 10 ? `${this.hour}:0${this.minute}` :  `${this.hour}:${this.minute}`
-       }
-      if(this.hour){
-        return `${this.hour}:00`
+      if (this.hour && this.minute) {
+        return this.minute < 10
+          ? `${this.hour}:0${this.minute}`
+          : `${this.hour}:${this.minute}`;
       }
-       else {
-         return '00:00'
-       }
-      
+      if (this.hour) {
+        return `${this.hour}:00`;
+      } else {
+        return "00:00";
+      }
     },
     style() {}
   },
   computed: {
     selectedTime() {
       return this.time;
-    },
-    
+    }
   }
 };
 </script>
@@ -359,7 +373,7 @@ export default {
   opacity: 0;
 }
 .turnover-enter-active {
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .turnover-enter
@@ -367,10 +381,9 @@ export default {
   transform: rotate(-50deg);
 }
 
-
 .disabled {
   background: #ccc;
-  pointer-events: none; 
+  pointer-events: none;
   cursor: default;
 }
 .sq2 {
