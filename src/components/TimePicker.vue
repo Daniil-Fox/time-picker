@@ -122,7 +122,7 @@
             <button
               class="btn-next"
               :class="{ disabled: !disabled }"
-              @click="(next = false), (disabled = false)"
+              @click="nextTo"
             >
               Back
             </button>
@@ -132,8 +132,10 @@
             <button
               class="btn-next"
               :class="{ disabled }"
-              @click="(next = true), (disabled = true)"
+              @click="nextTo"
+              
             >
+            <!-- (next = true), (disabled = true) -->
               Next
             </button>
           </div>
@@ -176,6 +178,7 @@ export default {
           arr.show = true;
         }
       });
+      this.disabled = true
       setTimeout(() => {
         this.next = true
       }, 200)
@@ -192,6 +195,7 @@ export default {
       setTimeout(() => {
         this.next = false
         this.active = false;
+        this.disabled = false
       }, 200)
     },
     reset() {
@@ -211,10 +215,19 @@ export default {
         return `${this.hour}:00`;
       }
       if (this.minute) {
-        return this.minute < 10 ? `00:0${this.minute}` : `00:${this.minute}`;
+        this.arrow.map(arr => {
+          if(arr.idx === 12){
+            arr.show = true
+          }
+        } )
+        return this.minute < 10 ? `24:0${this.minute}` : `24:${this.minute}`;
       } else {
-        return "00:00";
+        return "24:00";
       }
+    },
+    nextTo() {
+        this.next = !this.next 
+        this.disabled = !this.disabled
     }
   },
   computed: {
