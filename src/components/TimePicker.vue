@@ -1,22 +1,14 @@
 <template>
   <section style="root">
     <div class="select" :style="{ width }">
-      <p 
-        class="placeholder"
-        >{{ selectedTime }}</p>
-      <button 
-        class="btn-time" 
-        @click="clickHandler">
+      <p class="placeholder">{{ selectedTime }}</p>
+      <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
-      <button 
-        class="btn-reset" 
-        v-if="hour || minute"
-        @click="reset">
+      <button class="btn-reset" v-if="hour || minute" @click="reset">
         <img src="../assets/reset.svg" width="3rem" class="btn-picture" />
       </button>
       <transition name="slide-fade">
-       
         <div
           class="wrapper"
           v-if="active"
@@ -74,16 +66,12 @@
                 </div>
               </div>
             </transition>
-            <!-- /////////////////////// -->
-           
-          <transition name="turnover">
-              <div 
-                  class="clock" 
-                  v-if="next" 
-                  :style="{ backgroundColor }">
-                <div 
-                  class="clock-theme" 
-                  :style="{ width, height: width, backgroundSize: width }">
+            <transition name="turnover">
+              <div class="clock" v-if="next" :style="{ backgroundColor }">
+                <div
+                  class="clock-theme"
+                  :style="{ width, height: width, backgroundSize: width }"
+                >
                   <!-- here new clock for minutes-->
                   <div
                     class="container"
@@ -103,44 +91,26 @@
                         class="clock-hand clock-hand-active"
                         :style="{ backgroundColor: 'red' }"
                       />
-                       <button
+                      <button
                         class="square "
                         :style="{
-                          transform: `rotate(${270 - key.idx * 30}deg)`,
-                      
+                          transform: `rotate(${270 - key.idx * 30}deg)`
                         }"
-                        :class="{btnActive: selectHour}"
+                        :class="{ btnActive: selectHour }"
                         @click="selectMinute(key.idx * 5)"
-                      >{{ key.idx * 5 }}</button>
+                      >
+                        {{ key.idx * 5 }}
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </transition>
-            <button
-              class="btn-next"
-              :class="{ disabled: !disabled }"
-              @click="nextTo"
-            >
-              Back
-            </button>
-            <!-- <button  class="btn-next" :class="{disabled}" @click="nextHourLayout">
-              <img src="../assets/next.svg" class="btn-picture" />
-            </button> -->
-            <button
-              class="btn-next"
-              :class="{ disabled }"
-              @click="nextTo"
-              
-            >
-            <!-- (next = true), (disabled = true) -->
-              Next
-            </button>
+          
           </div>
         </div>
       </transition>
     </div>
-   
   </section>
 </template>
 
@@ -176,10 +146,10 @@ export default {
           arr.show = true;
         }
       });
-      this.disabled = true
+      this.disabled = true;
       setTimeout(() => {
-        this.next = true
-      }, 200)
+        this.next = true;
+      }, 200);
     },
     selectMinute(idx) {
       this.minute = idx;
@@ -191,10 +161,10 @@ export default {
         }
       });
       setTimeout(() => {
-        this.next = false
+        this.next = false;
         this.active = false;
-        this.disabled = false
-      }, 200)
+        this.disabled = false;
+      }, 200);
     },
     reset() {
       this.time = "hh:mm";
@@ -214,19 +184,16 @@ export default {
       }
       if (this.minute) {
         this.arrow.map(arr => {
-          if(arr.idx === 12){
-            arr.show = true
+          if (arr.idx === 12) {
+            arr.show = true;
           }
-        } )
+        });
         return this.minute < 10 ? `24:0${this.minute}` : `24:${this.minute}`;
       } else {
         return "24:00";
       }
     },
-    nextTo() {
-        this.next = !this.next 
-        this.disabled = !this.disabled
-    }
+   
   },
   computed: {
     selectedTime() {
@@ -237,9 +204,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital@0;1&display=swap");
+
 * {
   margin: 0;
   padding: 0;
+  font-family: "Roboto", sans-serif;
 }
 
 .select {
@@ -327,15 +297,7 @@ export default {
   width: 2.5rem;
 }
 
-.btn-next {
-  margin-top: 1.8rem;
-  border-radius: 50%;
-  border: 2px solid rgb(104, 104, 104);
-  width: 3rem;
-  height: 3rem;
-  background: none;
-  cursor: pointer;
-}
+
 .placeholder {
   display: block;
   text-transform: uppercase;
