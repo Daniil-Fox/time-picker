@@ -19,7 +19,6 @@
        
         <div
           class="wrapper"
-          :style="{ width: width + '50px', height: width + '100px' }"
           v-if="active"
         >
           <div
@@ -33,10 +32,9 @@
                   class="clock-theme"
                   :style="{ width, height: width, backgroundSize: width }"
                 >
-                  <!-- here new clock for minutes-->
                   <div
                     class="container"
-                    :style="{ width: width / 10, heigh: width / 10 }"
+                   
                     v-for="(key, idx) in arrow"
                     :key="idx"
                   >
