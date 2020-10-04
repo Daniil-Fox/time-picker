@@ -30,7 +30,6 @@ npm run lint
 | Prop       | Type      | Default   | Description |
 |:--------------|:----------|:----------|:------------|
 |backgroundColor|String|#E5E5E5|just background color|
-|width          |String|40vh|                        |
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

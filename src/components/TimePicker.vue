@@ -1,5 +1,5 @@
 <template>
-  <section style="root">
+  <section style="root" >
     <div class="select">
       <p class="placeholder">{{ selectedTime }}</p>
       <button class="btn-time" @click="clickHandler">
@@ -77,7 +77,6 @@
                         v-model="key.show"
                         class="clock-hand clock-hand-active"
                         :style="{ backgroundColor: 'red', width: '120px'}"
-                        
                       />
                       <button
                         class="square "
@@ -104,9 +103,7 @@
 <script>
 export default {
   props: {
-    backgroundColor: { type: String } || "E5E5E5",
-    // width: String,
-    value: { type: Date || String } || new Date()
+    backgroundColor: { type: String } || "E5E5E5"
   },
   data: () => ({
     hours: new Array(12)
@@ -117,7 +114,7 @@ export default {
       .map((buff, idx) => ({ idx, show: false })),
     active: false,
     next: false,
-    hour: null, //здесь тип не определяется, не пропса же
+    hour: null,
     minute: null,
     time: "hh:mm"
   }),
