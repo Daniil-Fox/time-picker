@@ -1,74 +1,68 @@
 <template>
-  <section style="root">
-    <div class="select" :style="{ width }">
+  <section style="root" >
+    <div class="select">
       <p class="placeholder">{{ selectedTime }}</p>
       <button class="btn-time" @click="clickHandler">
         <img src="../assets/timer.svg" width="3rem" class="btn-picture" />
       </button>
+      <button class="btn-reset" v-if="(hour && minute) || (hour && minute == 0)" @click="reset">
+        <img src="../assets/reset.svg" width="3rem" class="btn-picture" />
+      </button>
       <transition name="slide-fade">
-       
-        <div
-          class="wrapper"
-          :style="{ width: width + '50px', height: width + '100px' }"
-          v-if="active"
-        >
-          <div class="clock-wrapper" :style="{ width, height: width }" :class="{ active }">
-            
-          <transition name="turnover">
-            <div class="clock" v-if="!next" :style="{ backgroundColor }">
-              <div class="clock-theme" :style="{ width, height: width, backgroundSize: width }">
-                <!-- here new clock for minutes-->
-                <div
-                  class="container"
-                  :style="{ width: width / 10, heigh: width / 10 }"
-                  v-for="(key, idx) in arrow"
-                  :key="idx"
-                >
-                  <div
-                    class="block"
-                    :style="{
-                      transform: `rotate(${key.idx * 30}deg)`
-                    }"
-                  >
-                    <select
-                      v-if="key.show"
-                      v-model="key.show"
-                      class="clock-hand"
-                      :style="{ backgroundColor: 'red'}"
-                    />
-                    <button
-                      class="square sq1"
+        <div class="wrapper" v-if="active">
+          <div class="clock-wrapper" :class="{ active }">
+            <transition name="turnover">
+              <div class="clock" v-if="!next" :style="{ backgroundColor }">
+                <div class="clock-theme">
+                  <div class="container" v-for="(key, idx) in hours" :key="idx">
+                    <div
+                      class="block"
                       :style="{
-                        transform: `rotate(${270 - key.idx * 30}deg)`
+                        transform: `rotate(${key.idx * 30}deg)`
                       }"
-                      @click="selectHour(key.idx)"
-                    >{{ key.idx  }}</button>
+                    >
+                      <select
+                        v-if="key.show"
+                        v-model="key.show"
+                        class="clock-hand clock-hand-active"
+                        :style="{ backgroundColor: 'red', width: '120px'}"
+                      />
+                      <select
+                        v-if="key.showHand"
+                        v-model="key.show"
+                        class="clock-hand clock-hand-active"
+                        :style="{ backgroundColor: 'red', width: '90px'}"
+                      />
+                      <button
+                        class="square sq1"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 30}deg)`
+                        }"
+                        @click="selectHour(key.idx)"
+                      >
+                        {{ key.idx }}
+                      </button>
 
-                    <button
-                      class="square sq2"
-                      :style="{
-                        transform: `rotate(${270 - key.idx * 30}deg)`,
-                      }"
-                      @click="selectHour(key.idx + 12)"
-                    >{{ key.idx + 12 }}</button>
-                    
+                      <button
+                        class="square sq2"
+                        :style="{
+                          transform: `rotate(${270 - key.idx * 30}deg)`
+                        }"
+                        @click="selectHour(key.idx + 12)"
+                      >
+                        {{ key.idx + 12 }}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </transition>
-          <transition name="turnover">
-              <div 
-                  class="clock" 
-                  v-if="next" 
-                  :style="{ backgroundColor }">
-                <div 
-                  class="clock-theme" 
-                  :style="{ width, height: width, backgroundSize: width }">
+            </transition>
+            <transition name="turnover">
+              <div class="clock" v-if="next" :style="{ backgroundColor }">
+                <div class="clock-theme">
                   <!-- here new clock for minutes-->
                   <div
                     class="container"
-                    :style="{ width: width / 10, heigh: width / 10 }"
                     v-for="(key, idx) in minutes"
                     :key="idx"
                   >
@@ -81,28 +75,24 @@
                       <select
                         v-if="key.show"
                         v-model="key.show"
-                        class="clock-hand"
-                        :style="{ backgroundColor: 'red' }"
+                        class="clock-hand clock-hand-active"
+                        :style="{ backgroundColor: 'red', width: '120px'}"
                       />
                       <button
-                        class="square"
+                        class="square "
                         :style="{
-                          transform: `rotate(${270 - key.idx * 30}deg)`,
-                          fontSize: '.7rem'
+                          transform: `rotate(${270 - key.idx * 30}deg)`
                         }"
-                        @click="selectHour(key.idx)"
-                      >{{ key.idx*5 }}</button>
+                        :class="{ btnActive: selectHour }"
+                        @click="selectMinute(key.idx * 5)"
+                      >
+                        {{ key.idx * 5 }}
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </transition>
-            <button class="btn-next" :class="{disabled: !disabled}" @click="next = false, disabled = false">
-              Back
-            </button>
-            <button class="btn-next" :class="{disabled}" @click="next= true, disabled = true">
-              Next
-            </button>
           </div>
         </div>
       </transition>
@@ -113,78 +103,109 @@
 <script>
 export default {
   props: {
-    backgroundColor: { type: String } || "E5E5E5",
-    width: String,
-    value: { type: Date || String } || new Date()
+    backgroundColor: { type: String } || "E5E5E5"
   },
   data: () => ({
-    arrow: new Array(12)
+    hours: new Array(12)
       .fill(0)
-      .map((buff, idx) => ({ idx: idx + 1, show: false })),
+      .map((buff, idx) => ({ idx: idx + 1, show: false, showHand: false })),
     minutes: new Array(12)
       .fill(0)
-      .map((buff, idx) => ({ idx: idx + 1, show: false })),
+      .map((buff, idx) => ({ idx, show: false })),
     active: false,
     next: false,
-    disabled: false,
-    hour: null, //здесь тип не определяется, не пропса же
+    hour: null,
     minute: null,
-    time: "hh:mm",
-    
+    time: "hh:mm"
   }),
   methods: {
     clickHandler() {
-      console.log(this.backgroundColor);
-      console.log(this.arrow);
       this.active = !this.active;
+      this.next = false
     },
     selectHour(idx) {
       this.hour = idx;
       this.time = this.formatTime();
-      this.arrow.map(arr => {
+      this.hours.map(arr => {
         arr.show = false;
+        arr.showHand = false
         if (arr.idx === idx || arr.idx + 12 === idx) {
-          arr.show = true;
+          if(arr.idx + 12 === idx){
+            arr.showHand = true
+          }
+          else {
+            arr.show = true;
+          }
         }
+        
       });
+      this.minutes.map(m => {
+        if(!this.minute && m.idx === 0) {
+          m.show = true
+          this.minute = 0
+        }
+      })
+      setTimeout(() => {
+        this.next = true;
+      }, 200);
     },
-    selectMinute(idx){
+    selectMinute(idx) {
       this.minute = idx;
       this.time = this.formatTime();
       this.minutes.map(min => {
         min.show = false;
-        if (min.idx === idx) {
+        if (min.idx * 5 === idx) {
           min.show = true;
         }
       });
+      setTimeout(() => {
+        this.next = false;
+        this.active = false;
+      }, 200);
+    },
+    reset() {
+      this.next = false
+      this.time = "hh:mm";
+      this.hour = null;
+      this.minute = null;
+      this.hours.map(a => (a.show = false, a.showHand = false));
+      this.minutes.map(m => (m.show = false));
     },
     formatTime() {
-       if (this.hour && this.minute) {    
-          return  this.minute < 10 ? `${this.hour}:0${this.minute}` :  `${this.hour}:${this.minute}`
-       }
-      if(this.hour){
-        return `${this.hour}:00`
+      if (this.hour && this.minute) {
+        return this.minute < 10
+          ? `${this.hour}:0${this.minute}`
+          : `${this.hour}:${this.minute}`;
+      }
+      if (this.hour) {
+        return `${this.hour}:00`;
       }
        else {
-         return '00:00'
-       }
-      
-    },
-    style() {}
+        return "24:00";
+      }
+    }
   },
   computed: {
     selectedTime() {
       return this.time;
-    },
-    
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital@0;1&display=swap");
+
 * {
   margin: 0;
   padding: 0;
+  font-family: "Roboto", sans-serif;
+}
+.width-clock-hand{
+  width: 75px;
+}
+.other-clock-hand{
+  width: 130px;
 }
 .select {
   position: relative;
@@ -199,6 +220,7 @@ export default {
   justify-content: center;
   z-index: 10000;
 }
+
 .block {
   width: 150px;
   height: 50px;
@@ -232,16 +254,19 @@ export default {
   color: #000;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 400;
   z-index: 1;
 }
+
 .clock-hand {
   position: absolute;
   border: none;
   transform-origin: -30%;
+  // transform: rotate(360deg);
   transform: rotate(1deg);
+  right: 10px;
   height: 2px;
-  width: 130px;
+  // width: 150px;
 }
 .blockActive {
   border: 1px solid #000;
@@ -267,16 +292,6 @@ export default {
   position: absolute;
   right: 0;
   width: 2.5rem;
-}
-
-.btn-next {
-  margin-top: 1.8rem;
-  border-radius: 50%;
-  border: 2px solid rgb(104, 104, 104);
-  width: 3rem;
-  height: 3rem;
-  background: none;
-  cursor: pointer;
 }
 .placeholder {
   display: block;
@@ -359,7 +374,7 @@ export default {
   opacity: 0;
 }
 .turnover-enter-active {
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .turnover-enter
@@ -367,17 +382,18 @@ export default {
   transform: rotate(-50deg);
 }
 
-
-.disabled {
-  background: #ccc;
-  pointer-events: none; 
-  cursor: default;
-}
 .sq2 {
   border: 1px solid rgb(167, 167, 167);
   border-radius: 50%;
 }
 .btn-active {
   background: rgb(126, 126, 255);
+}
+.btn-reset {
+  display: block;
+  position: absolute;
+  border: none;
+  background: none;
+  left: 5px;
 }
 </style>
