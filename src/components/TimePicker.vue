@@ -25,7 +25,13 @@
                         v-if="key.show"
                         v-model="key.show"
                         class="clock-hand clock-hand-active"
-                        :style="{ backgroundColor: 'red' }"
+                        :style="{ backgroundColor: 'red', width: '120px'}"
+                      />
+                      <select
+                        v-if="key.showHand"
+                        v-model="key.show"
+                        class="clock-hand clock-hand-active"
+                        :style="{ backgroundColor: 'red', width: '90px'}"
                       />
                       <button
                         class="square sq1"
@@ -70,7 +76,8 @@
                         v-if="key.show"
                         v-model="key.show"
                         class="clock-hand clock-hand-active"
-                        :style="{ backgroundColor: 'red' }"
+                        :style="{ backgroundColor: 'red', width: '120px'}"
+                        
                       />
                       <button
                         class="square "
@@ -104,7 +111,7 @@ export default {
   data: () => ({
     hours: new Array(12)
       .fill(0)
-      .map((buff, idx) => ({ idx: idx + 1, show: false })),
+      .map((buff, idx) => ({ idx: idx + 1, show: false, showHand: false })),
     minutes: new Array(12)
       .fill(0)
       .map((buff, idx) => ({ idx, show: false })),
@@ -124,9 +131,16 @@ export default {
       this.time = this.formatTime();
       this.hours.map(arr => {
         arr.show = false;
+        arr.showHand = false
         if (arr.idx === idx || arr.idx + 12 === idx) {
-          arr.show = true;
+          if(arr.idx + 12 === idx){
+            arr.showHand = true
+          }
+          else {
+            arr.show = true;
+          }
         }
+        
       });
       this.minutes.map(m => {
         if(!this.minute && m.idx === 0) {
@@ -153,10 +167,11 @@ export default {
       }, 200);
     },
     reset() {
+      this.next = false
       this.time = "hh:mm";
       this.hour = null;
       this.minute = null;
-      this.hours.map(a => (a.show = false));
+      this.hours.map(a => (a.show = false, a.showHand = false));
       this.minutes.map(m => (m.show = false));
     },
     formatTime() {
@@ -189,7 +204,12 @@ export default {
   padding: 0;
   font-family: "Roboto", sans-serif;
 }
-
+.width-clock-hand{
+  width: 75px;
+}
+.other-clock-hand{
+  width: 130px;
+}
 .select {
   position: relative;
   border: none;
@@ -245,9 +265,11 @@ export default {
   position: absolute;
   border: none;
   transform-origin: -30%;
+  // transform: rotate(360deg);
   transform: rotate(1deg);
+  right: 10px;
   height: 2px;
-  width: 130px;
+  // width: 150px;
 }
 .blockActive {
   border: 1px solid #000;
